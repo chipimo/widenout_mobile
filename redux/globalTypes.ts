@@ -6,7 +6,8 @@ export const GLOBALTYPES = {
     STATUS: 'STATUS',
     MODAL: 'MODAL',
     USER_TYPE: 'USER_TYPE',
-    SOCKET: 'SOCKET'
+    SOCKET: 'SOCKET',
+    imageLink: 'http://localhost/widenout/web/uploads/avatars',
 };
 
 export const EditData = (data: any[], id: any, post: any) => {

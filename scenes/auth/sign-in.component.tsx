@@ -22,7 +22,6 @@ import { useLoginMutation } from "../../services/fetch.user.service";
 import { userLoggedIn } from "../../redux/features/auth/userAuth";
 import { margin } from "../../components/config/spacing";
 
-
 const height = Dimensions.get("window").height;
 
 export default ({ navigation }): React.ReactElement => {
@@ -36,9 +35,7 @@ export default ({ navigation }): React.ReactElement => {
   const [login, { isLoading, isError, status, error }] = useLoginMutation();
   const dispatch = useDispatch();
 
-  useEffect(() => {
- 
-  }, [error]);
+  useEffect(() => {}, [error]);
 
   const styles = useStyleSheet(themedStyles);
 
@@ -49,14 +46,22 @@ export default ({ navigation }): React.ReactElement => {
   const handleSubmit = async () => {
     try {
       const user = await login({ username, password }).unwrap();
-      if (user) dispatch(userLoggedIn(user));
+      if (user !== "Incorrect Data") {
+        console.log(user);
+        dispatch(userLoggedIn(user));
+      } else {
+        showMessage({
+          message: "Incorrect Username or Password",
+          type: "danger",
+        });
+      }
     } catch (err) {
       console.log(err);
-      
-      // showMessage({
-      //   message: err.data.msg,
-      //   type: "danger",
-      // });
+
+      showMessage({
+        message: "Failed to login please check your con",
+        type: "danger",
+      });
     }
   };
 
@@ -82,7 +87,6 @@ export default ({ navigation }): React.ReactElement => {
 
   return (
     <KeyboardAvoidingView style={styles.container}>
-
       <View style={styles.imageBox}>
         <Image
           style={styles.stretch}

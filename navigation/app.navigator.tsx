@@ -22,7 +22,7 @@ const AppNavigator = (): React.ReactElement => {
 
   const { isLoggedIn } = useSelector((state: RootState) => state.user.user);
 
-  return (
+  return (  
     <NavigationContainer theme={navigatorTheme}>
       {isLoggedIn ? <HomeNavigator /> : <AuthNavigator />}
     </NavigationContainer>

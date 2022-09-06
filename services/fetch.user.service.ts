@@ -21,6 +21,10 @@ export interface UserTokenRequest {
   refreshtoken: string;
 }
 
+export interface getFeedsRequest {
+  uid: string;
+}
+
 export const usersApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
@@ -34,6 +38,13 @@ export const usersApi = createApi({
     login: builder.mutation<UserResponse, LoginRequest>({
       query: (credentials) => ({
         url: "login.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    feeds: builder.mutation<UserResponse, getFeedsRequest>({
+      query: (credentials) => ({
+        url: "getFeeds.php",
         method: "POST",
         body: credentials,
       }),
@@ -53,6 +64,7 @@ export const usersApi = createApi({
 
 export const {
   useLoginMutation,
+  useFeedsMutation,
   useProtectedMutation,
   useLoginWithJWTMutation,
 } = usersApi;
