@@ -15,7 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import immutableTransform from "redux-persist-transform-immutable";
 import rootReducer from "./reducers";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
-import { usersApi } from "../services/fetch.user.service";
+import { postApi, usersApi } from "../services/fetch.user.service";
 
 const persistConfig = {
   key: "root",
@@ -30,6 +30,7 @@ export const store = configureStore({
   reducer: {
     user: persistedReducer,
     [usersApi.reducerPath]: usersApi.reducer,
+    [postApi.reducerPath]: postApi.reducer,
   },
   
   middleware: (getDefaultMiddleware) =>

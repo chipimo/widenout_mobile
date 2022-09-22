@@ -8,9 +8,11 @@ import {
   StyleService,
 } from "@ui-kitten/components";
 import {
+  AddOutlineIcon,
   GroupIcon,
   HomeIcon,
   MessagesIcon,
+  NotificationsIcon,
   SearchIcon,
 } from "./icons";
 import { BrandBottomNavigation } from "./brand-bottom-navigation.component";
@@ -54,6 +56,7 @@ export const HomeBottomNavigation: React.FC<BottomTabBarProps> = ({
   const transforms = useVisibilityAnimation(true);
 
   const onSelect = (index: number): void => {
+    if (index === 2) navigation.toggleDrawer();
     navigation.navigate(state.routeNames[index]);
   };
 
@@ -72,8 +75,9 @@ export const HomeBottomNavigation: React.FC<BottomTabBarProps> = ({
         onSelect={onSelect}
       >
         <BottomNavigationTab title="Home" icon={HomeIcon} />
-        <BottomNavigationTab title="Search" icon={SearchIcon} />
         <BottomNavigationTab title="Groups" icon={GroupIcon} />
+        <BottomNavigationTab title="Post" icon={AddOutlineIcon} />
+        <BottomNavigationTab title="Notification" icon={NotificationsIcon} />
         <BottomNavigationTab title="Messages" icon={MessagesIcon} />
       </BrandBottomNavigation>
     </Animated.View>

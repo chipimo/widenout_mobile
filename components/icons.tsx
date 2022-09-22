@@ -6,6 +6,10 @@ export const ArrowIosBackIcon = (style: ImageStyle): IconElement => (
   <Icon {...style} name='arrow-ios-back'/>
 );
 
+export const AddOutlineIcon = (style: ImageStyle): IconElement => (
+  <Icon {...style} name='plus-square-outline'/>
+);
+
 export const UserIcon = (style: ImageStyle): IconElement => (
   <Icon {...style} name='person-outline'/>
 );

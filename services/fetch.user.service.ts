@@ -11,6 +11,10 @@ export interface UserResponse {
   user: User;
   token: string;
 }
+export interface FeedsResponse {
+  status: any;
+  feeds: any;
+}
 
 export interface LoginRequest {
   username: string;
@@ -25,10 +29,17 @@ export interface getFeedsRequest {
   uid: string;
 }
 
+export interface postFeedsRequest {
+  message: string;
+  tag: string;
+  img: string;
+  group_id: string;
+}
+
 export const usersApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://192.168.1.134/api/endpoints",
+    baseUrl: "http://192.168.1.134/api/endpoints/",
     prepareHeaders: (headers, { getState }) => {
       headers.set("Content-Type", "application/json");
       return headers;
@@ -42,7 +53,7 @@ export const usersApi = createApi({
         body: credentials,
       }),
     }),
-    feeds: builder.mutation<UserResponse, getFeedsRequest>({
+    feeds: builder.mutation<FeedsResponse, getFeedsRequest>({
       query: (credentials) => ({
         url: "getFeeds.php",
         method: "POST",
@@ -52,6 +63,36 @@ export const usersApi = createApi({
     loginWithJWT: builder.mutation<UserResponse, UserTokenRequest>({
       query: (credentials) => ({
         url: "login_with_jwt",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    getGroups: builder.mutation<any, UserTokenRequest>({
+      query: (credentials) => ({
+        url: "getGroupData.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    protected: builder.mutation<{ message: string }, void>({
+      query: () => "protected",
+    }),
+  }),
+});
+
+export const postApi = createApi({
+  reducerPath: "postApi",
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://192.168.1.134/api/endpoints/",
+    prepareHeaders: (headers, { getState }) => {
+      headers.set("Content-Type", "multipart/form-data");
+      return headers;
+    },
+  }),
+  endpoints: (builder) => ({
+    post_feed: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "postFeeds.php",
         method: "POST",
         body: credentials,
       }),
@@ -66,5 +107,8 @@ export const {
   useLoginMutation,
   useFeedsMutation,
   useProtectedMutation,
+  useGetGroupsMutation,
   useLoginWithJWTMutation,
 } = usersApi;
+
+export const { usePost_feedMutation } = postApi;

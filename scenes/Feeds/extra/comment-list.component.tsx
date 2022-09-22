@@ -1,5 +1,5 @@
 import React from "react";
-import { ListRenderItemInfo, StyleSheet, View } from "react-native";
+import { Image, ListRenderItemInfo, StyleSheet, View } from "react-native";
 import {
   Avatar,
   Button,
@@ -7,21 +7,23 @@ import {
   List,
   ListProps,
   Text,
+  Divider,
 } from "@ui-kitten/components";
 import { HeartIcon, MessageCircleIcon, MoreHorizontalIcon } from "./icons";
-import { Comment } from "./data";
+import { GLOBALTYPES } from "../../../redux/globalTypes";
 
 export type CommentListProps = Omit<ListProps, "renderItem">;
 
 export const CommentList = (props: CommentListProps): React.ReactElement => {
-  
-  const renderCommentHeader = (comment: Comment): React.ReactElement => (
+  const renderCommentHeader = (comment: any): React.ReactElement => (
     <View style={styles.commentHeader}>
-      <Avatar source={comment.author.photo} />
+      <Avatar source={{ uri: GLOBALTYPES.imageLink + comment.image }} />
       <View style={styles.commentAuthorContainer}>
-        <Text category="s2">{comment.author.fullName}</Text>
+        <Text category="s2">
+          {comment.first_name + " " + comment.last_name}
+        </Text>
         <Text appearance="hint" category="c1">
-          {comment.date}
+          {comment.time}
         </Text>
       </View>
       <Button
@@ -33,14 +35,23 @@ export const CommentList = (props: CommentListProps): React.ReactElement => {
     </View>
   );
 
-  const renderItem = (
-    info: any
-  ): React.ReactElement => (
-    <Card
-      style={styles.commentItem}
-      header={() => renderCommentHeader(info.item)}
-    >
-      <Text>{info.item.text}</Text>
+  const renderItem = (info: any): React.ReactElement => (
+    <View style={styles.commentItem}>
+      {renderCommentHeader(info.item)}
+      <Divider />
+      <View style={styles.postBody}>
+        <Text>{info.item.message}</Text>
+      </View>
+      <View>
+        {info.item.value !== "" ? (
+          <Image
+            resizeMode="contain"
+            style={styles.stretch}
+            source={{ uri: GLOBALTYPES.uploadsLink + info.item.value }}
+          />
+        ) : null}
+      </View>
+      <Divider />
       <View style={styles.commentReactionsContainer}>
         <Button
           style={styles.iconButton}
@@ -48,7 +59,7 @@ export const CommentList = (props: CommentListProps): React.ReactElement => {
           status="basic"
           accessoryLeft={MessageCircleIcon}
         >
-          {`${info.item.comments.length}`}
+          {info.item.comments !== "0" ? `${info.item.comments}` : ``}
         </Button>
         <Button
           style={styles.iconButton}
@@ -59,7 +70,7 @@ export const CommentList = (props: CommentListProps): React.ReactElement => {
           {`${info.item.likes.length}`}
         </Button>
       </View>
-    </Card>
+    </View>
   );
 
   return <List {...props} renderItem={renderItem} />;
@@ -69,10 +80,17 @@ const styles = StyleSheet.create({
   commentItem: {
     marginVertical: 4,
     marginHorizontal: 16,
+    backgroundColor: "#fff",
+    borderRadius: 5,
   },
   commentHeader: {
     flexDirection: "row",
     padding: 16,
+  },
+  postBody: {
+    marginHorizontal: 16,
+    marginTop: 2,
+    marginBottom: 2,
   },
   commentAuthorContainer: {
     flex: 1,
@@ -80,11 +98,16 @@ const styles = StyleSheet.create({
   },
   commentReactionsContainer: {
     flexDirection: "row",
-    marginTop: 8,
+    padding: 8,
     marginHorizontal: -8,
     marginVertical: -8,
   },
   iconButton: {
     paddingHorizontal: 0,
+  },
+  stretch: {
+    width: "100%",
+    height: undefined,
+    aspectRatio: 1,
   },
 });

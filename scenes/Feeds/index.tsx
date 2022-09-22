@@ -19,6 +19,9 @@ import { Article } from "./extra/data";
 import { CommentList } from "./extra/comment-list.component";
 import { CameraIcon, VideoIcon } from "./extra/icons";
 import { useFeedsMutation } from "../../services/fetch.user.service";
+import { useDispatch, useSelector } from "react-redux";
+import { userFeeds } from "../../redux/features/feeds";
+import { RootState } from "../../redux/configureStore";
 
 const data: Article = Article.howToEatHealthy();
 
@@ -32,30 +35,34 @@ export default ({ navigation }): React.ReactElement => {
   const styles = useStyleSheet(themedStyles);
   const [inputComment, setInputComment] = React.useState<string>();
   const [feeds, { isLoading, isError, status, error }] = useFeedsMutation();
+  const { list } = useSelector((state: RootState) => state.user.feeds);
+
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     getFeeds();
   }, []);
 
   const getFeeds = async () => {
-    let uid = "2";
-    const feed = await feeds({ uid }).unwrap();
+    let uid = "3";
 
+    const feed = await feeds({ uid }).unwrap();
     console.log(feed);
+    
+    dispatch(userFeeds(feed));
   };
 
   const renderHeader = (): React.ReactElement => (
     <Layout style={styles.header} level="1">
+      <Text style={styles.descriptionLabel} category="s1">
+        Update your status
+      </Text>
       <TouchableOpacity onPress={() => navigation.navigate("PostStatus")}>
         {/* <Avatar source={require("../../../assets/images/20210507_164638.jpg")} /> */}
-        <Text style={styles.descriptionLabel} category="s1">
-          Update your status
-        </Text>
+        <View style={styles.commentInput}>
+          <Text appearance="hint">What's on your mind?</Text>
+        </View>
       </TouchableOpacity>
-
-      <View style={styles.commentInput}>
-        <Text appearance="hint">What's on your mind?</Text>
-      </View>
 
       <View style={styles.cardIconsList}>
         <Button
@@ -85,7 +92,7 @@ export default ({ navigation }): React.ReactElement => {
     <KeyboardAvoidingView style={styles.container} offset={keyboardOffset}>
       <CommentList
         style={styles.list}
-        data={data.comments}
+        data={list}
         ListHeaderComponent={renderHeader()}
       />
     </KeyboardAvoidingView>
@@ -95,10 +102,11 @@ export default ({ navigation }): React.ReactElement => {
 const themedStyles = StyleService.create({
   container: {
     flex: 1,
-    backgroundColor: "background-basic-color-2",
+    backgroundColor: "background-basic-color-4",
     paddingBottom: 8,
   },
   list: {
+    backgroundColor: "background-basic-color-4",
     flex: 1,
   },
   cardIconsList: {

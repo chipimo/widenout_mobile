@@ -10,6 +10,7 @@ import { ThemesNavigator } from './themes.navigator';
 import Search from '../scenes/Search';
 import { HomeBottomNavigation } from '../components/home-bottom-navigation.component';
 import { HomeDrawer } from '../components/HomeDrawer';
+import Groups from '../scenes/Groups';
 
 const BottomTab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -22,15 +23,15 @@ const HomeTabsNavigator = (): React.ReactElement => (
     screenOptions={{ headerShown: false }}
     tabBar={props => <HomeBottomNavigation {...props} />}>
     <BottomTab.Screen name='Feeds' component={LayoutsNavigator} />
+    <BottomTab.Screen name='Groups' component={Groups} />
     <BottomTab.Screen name='Search' component={Search} />
-    <BottomTab.Screen name='Groups' component={ThemesNavigator} />
   </BottomTab.Navigator>
 );
 
  const HomeNavigator = (): React.ReactElement => (
   <Drawer.Navigator
     drawerContent={props => <HomeDrawer {...props} />}>
-    <Drawer.Screen name='Widen Out' component={HomeTabsNavigator} />
+    <Drawer.Screen  name='Widen Out' component={HomeTabsNavigator} />
     {/* <Drawer.Screen name='Theme' component={ThemesNavigator} />  */}
   </Drawer.Navigator>
 );

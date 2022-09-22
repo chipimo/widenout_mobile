@@ -12,7 +12,7 @@ export const feedsSlice = createSlice({
   name: "feeds",
   initialState,
   reducers: {
-    feeds: (
+    userFeeds: (
       state: {
         list: [];
       },
@@ -24,6 +24,6 @@ export const feedsSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { feeds } = feedsSlice.actions;
+export const { userFeeds } = feedsSlice.actions;
 
 export default feedsSlice.reducer;
