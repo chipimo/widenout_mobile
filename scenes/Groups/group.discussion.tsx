@@ -8,6 +8,7 @@ import {
 import {
   Avatar,
   Button,
+  Divider,
   Input,
   Layout,
   StyleService,
@@ -16,12 +17,12 @@ import {
 } from "@ui-kitten/components";
 import { KeyboardAvoidingView } from "./extra/keyboard-avoiding-view.component";
 import { CommentList } from "./extra/comment-list.component";
-import { CameraIcon, VideoIcon } from "./extra/icons";
-import { useFeedsMutation } from "../../services/fetch.user.service";
+import { CameraIcon, Joined, VideoIcon } from "./extra/icons";
+import { useGetGroupFeedsMutation } from "../../services/fetch.user.service";
 import { useDispatch, useSelector } from "react-redux";
 import { userFeeds } from "../../redux/features/feeds";
 import { RootState } from "../../redux/configureStore";
-
+import { GLOBALTYPES } from "../../redux/globalTypes";
 
 const keyboardOffset = (height: number): number =>
   Platform.select({
@@ -31,28 +32,72 @@ const keyboardOffset = (height: number): number =>
 
 export default ({ navigation }): React.ReactElement => {
   const styles = useStyleSheet(themedStyles);
-  const [inputComment, setInputComment] = React.useState<string>();
-  const [feeds, { isLoading, isError, status, error }] = useFeedsMutation();
+  const [getGroupFeeds, { isLoading, isError, status, error }] =
+    useGetGroupFeedsMutation();
   const { list } = useSelector((state: RootState) => state.user.feeds);
+  const [groupComments, setGroupComments]= React.useState([])
 
   const dispatch = useDispatch();
+
+  const state = navigation.getState();
+  const { title, privacy, posts, members, description, id, cover } =
+    state.routes[1].params;
 
   React.useEffect(() => {
     getFeeds();
   }, []);
 
   const getFeeds = async () => {
-    let user_id = "3";
+    let group_id = id;
 
-    const feed = await feeds({ user_id }).unwrap();
-    // console.log(feed);
-    dispatch(userFeeds(feed));
+    const groupFeed = await getGroupFeeds({ group_id }).unwrap();
+    // console.log(groupFeed);
+    setGroupComments(groupFeed);
+    // dispatch(userFeeds(groupFeed));
   };
 
   const renderHeader = (): React.ReactElement => (
     <Layout style={styles.header} level="1">
+      <View>
+        <ImageBackground
+          source={{ uri: GLOBALTYPES.coversLink + cover }}
+          resizeMode="cover"
+          style={styles.image}
+        ></ImageBackground>
+        <Divider />
+        <View style={styles.headerText}>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={styles.text} category="h6">
+              {title}
+            </Text>
+            <View
+              style={{ flexDirection: "row", marginLeft: 10, marginTop: 2 }}
+            >
+              <Text style={styles.text} appearance="hint">
+                {members != 1 ? `${members} members` : `${members} member`}
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.text}>{description}</Text>
+          <View style={{ width: "40%" }}>
+            <Button
+              size="tiny"
+              disabled={false}
+              onPress={() => {
+                getFeeds();
+              }}
+              accessoryLeft={Joined}
+            >
+              {"Joined"}
+            </Button>
+          </View>
+        </View>
+        <Divider />
+        <Divider />
+        <Divider />
+      </View>
       <Text style={styles.descriptionLabel} category="s1">
-        Update your status
+        Post in {title}
       </Text>
       <TouchableOpacity onPress={() => navigation.navigate("PostStatus")}>
         {/* <Avatar source={require("../../../assets/images/20210507_164638.jpg")} /> */}
@@ -89,7 +134,7 @@ export default ({ navigation }): React.ReactElement => {
     <KeyboardAvoidingView style={styles.container} offset={keyboardOffset}>
       <CommentList
         style={styles.list}
-        data={list}
+        data={groupComments}
         ListHeaderComponent={renderHeader()}
       />
     </KeyboardAvoidingView>
@@ -109,6 +154,13 @@ const themedStyles = StyleService.create({
   cardIconsList: {
     flexDirection: "row",
     paddingHorizontal: 15,
+  },
+  text: {
+    margin: 2,
+  },
+  headerText: {
+    padding: 2,
+    paddingLeft: 10,
   },
   iconButton: {
     paddingHorizontal: 0,

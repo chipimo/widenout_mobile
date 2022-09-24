@@ -26,7 +26,7 @@ export interface UserTokenRequest {
 }
 
 export interface getFeedsRequest {
-  uid: string;
+  user_id: string;
 }
 
 export interface postFeedsRequest {
@@ -69,7 +69,21 @@ export const usersApi = createApi({
     }),
     getGroups: builder.mutation<any, UserTokenRequest>({
       query: (credentials) => ({
-        url: "getGroupData.php",
+        url: "getAllGroups.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    getGroupFeeds: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "getGroupPosts.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    getNotifications: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "getAllNotifications.php",
         method: "POST",
         body: credentials,
       }),
@@ -108,7 +122,9 @@ export const {
   useFeedsMutation,
   useProtectedMutation,
   useGetGroupsMutation,
+  useGetGroupFeedsMutation,
   useLoginWithJWTMutation,
+  useGetNotificationsMutation,
 } = usersApi;
 
 export const { usePost_feedMutation } = postApi;

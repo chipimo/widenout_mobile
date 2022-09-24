@@ -10,7 +10,9 @@ import { ThemesNavigator } from './themes.navigator';
 import Search from '../scenes/Search';
 import { HomeBottomNavigation } from '../components/home-bottom-navigation.component';
 import { HomeDrawer } from '../components/HomeDrawer';
-import Groups from '../scenes/Groups';
+import { GroupNavigator } from './groups.navigator';
+import Notifications from '../scenes/Notifications';
+import Messages from '../scenes/Messages';
 
 const BottomTab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -23,8 +25,10 @@ const HomeTabsNavigator = (): React.ReactElement => (
     screenOptions={{ headerShown: false }}
     tabBar={props => <HomeBottomNavigation {...props} />}>
     <BottomTab.Screen name='Feeds' component={LayoutsNavigator} />
-    <BottomTab.Screen name='Groups' component={Groups} />
+    <BottomTab.Screen name='Groups' component={GroupNavigator} />
     <BottomTab.Screen name='Search' component={Search} />
+    <BottomTab.Screen name='Notifications' component={Notifications} />
+    <BottomTab.Screen name='Messages' component={Messages} />
   </BottomTab.Navigator>
 );
 

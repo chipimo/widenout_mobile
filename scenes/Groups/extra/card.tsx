@@ -1,37 +1,46 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
-import { Button, Card, CardElement, CardProps, Text } from '@ui-kitten/components';
-import { ImageOverlay } from './image-overlay.component';
-import { ClockIcon } from './icons';
+import React from "react";
+import { StyleSheet } from "react-native";
+import {
+  Button,
+  Card,
+  CardElement,
+  CardProps,
+  Text,
+} from "@ui-kitten/components";
+import { ImageOverlay } from "./image-overlay.component";
+import { ClockIcon } from "./icons";
+import { GLOBALTYPES } from "../../../redux/globalTypes";
 
 export const GroupCard = (props: any): CardElement => {
+  const { navigate } = props.navigate;
+  const { cover, title, description, members } = props.items;
 
-  const { style, training, ...cardProps } = props;
+  React.useEffect(() => {
+    // console.log(props);
+  }, []);
 
   return (
-    <Card
-      {...cardProps}
-      style={[styles.container, style]}>
+    <Card style={styles.container}>
       <ImageOverlay
         style={styles.image}
-        source={training.image}>
-        <Text
-          style={styles.level}
-          category='s1'
-          status='control'>
-          {training.formattedLevel}
+        source={{ uri: GLOBALTYPES.coversLink + cover }}
+      >
+        <Text style={styles.level} category="s1" status="control">
+          {title}
         </Text>
-        <Text
-          style={styles.title}
-          category='h2'
-          status='control'>
-          {training.title}
+        <Text style={styles.level} category="s1" status="control">
+          {members != 1 ? `${members} members` : `${members} member`}
+        </Text>
+        <Text style={styles.title} category="h4" status="control">
+          {description}
         </Text>
         <Button
           style={styles.durationButton}
-          size='tiny'
-          accessoryLeft={ClockIcon}>
-          {training.formattedDuration}
+          size="tiny"
+          onPress={() => navigate("GroupDiscussion", { ...props.items })}
+          accessoryLeft={ClockIcon}
+        >
+          {"Open group feeds"}
         </Button>
       </ImageOverlay>
     </Card>
@@ -50,12 +59,14 @@ const styles = StyleSheet.create({
   },
   level: {
     zIndex: 1,
+    color: "#fff",
   },
   title: {
     zIndex: 1,
+    color: "#fff",
   },
   durationButton: {
-    position: 'absolute',
+    position: "absolute",
     left: 16,
     bottom: 16,
     borderRadius: 16,

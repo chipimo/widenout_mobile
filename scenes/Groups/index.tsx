@@ -17,7 +17,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { KeyboardAvoidingView } from "../extra/keyboard-avoiding-view.component";
 import { RootState } from "../../redux/configureStore";
-// import { GroupCard } from "./extra/card";
+import { GroupCard } from "./extra/card";
 import { useGetGroupsMutation } from "../../services/fetch.user.service";
 
 const keyboardOffset = (height: number): number =>
@@ -28,13 +28,14 @@ const keyboardOffset = (height: number): number =>
 
 export default ({ navigation }): React.ReactElement => {
   const styles = useStyleSheet(themedStyles);
-  const [groups, { isLoading, isError, status, error }] = useGetGroupsMutation();
+  const [groupCards, setGroupCards] = React.useState([]);
+  const [groups, { isLoading, isError, status, error }] =
+    useGetGroupsMutation();
   const { user } = useSelector((state: RootState) => state.user.user);
 
   const dispatch = useDispatch();
 
   React.useEffect(() => {
-    // console.log(user);
     getGroups();
   }, []);
 
@@ -42,15 +43,16 @@ export default ({ navigation }): React.ReactElement => {
     let uid = user.idu;
 
     const groupsList = await groups({ uid }).unwrap();
-    console.log(groupsList);
-
+    setGroupCards(groupsList);
     // dispatch(userFeeds(feed));
   };
 
   return (
     <KeyboardAvoidingView style={styles.container} offset={keyboardOffset}>
       <View>
-        {/* <GroupCard /> */}
+        {groupCards.map((list) => (
+          <GroupCard navigate={navigation} items={list} />
+        ))}
       </View>
     </KeyboardAvoidingView>
   );

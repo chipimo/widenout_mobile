@@ -26,7 +26,6 @@ import { RootState } from "../redux/configureStore";
 import { userLoggedOut } from "../redux/features/auth/userAuth";
 import { GLOBALTYPES } from "../redux/globalTypes";
 
-
 export const HomeDrawer = ({ navigation }): DrawerElement => {
   const [selectedIndex, setSelectedIndex] = useState<IndexPath>(null);
   const { user } = useSelector((state: RootState) => state.user.user);
@@ -34,7 +33,7 @@ export const HomeDrawer = ({ navigation }): DrawerElement => {
   //   const UserInfo = user[0];
 
   React.useEffect(() => {
-    console.log(user);
+    // console.log(user);
   }, []);
 
   const DATA = [
@@ -91,7 +90,10 @@ export const HomeDrawer = ({ navigation }): DrawerElement => {
       <Layout style={styles.header} level="2">
         <View style={styles.profileContainer}>
           <View style={styles.userInfoContainer}>
-            <Avatar size="giant" source={{uri:`http://localhost/widenout/web/uploads/avatars/default.png`}} />
+            <Avatar
+              size="giant"
+              source={{ uri: GLOBALTYPES.imageLink + user.image }}
+            />
             <View>
               <Text style={styles.profileName} category="h6">
                 {user.username}

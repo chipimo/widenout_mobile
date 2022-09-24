@@ -9,7 +9,7 @@ import {
   Text,
   Divider,
 } from "@ui-kitten/components";
-import moment from "moment";
+import moment from 'moment'
 import { HeartIcon, MessageCircleIcon, MoreHorizontalIcon } from "./icons";
 import { GLOBALTYPES } from "../../../redux/globalTypes";
 
