@@ -17,7 +17,7 @@ export const LayoutsNavigator = (): React.ReactElement => (
   <Stack.Navigator
     screenOptions={{ presentation: "modal", headerShown: false }}
   >
-    <Stack.Screen name="Feeds" component={FeedsNavigator} />
+    <Stack.Screen name="LayoutFeeds" component={FeedsNavigator} />
     <Stack.Screen name="PostStatus" component={PostStatus} />
     <Stack.Screen name="PostUserProfile" component={UserProfile} />
   </Stack.Navigator>

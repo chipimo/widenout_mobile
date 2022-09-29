@@ -18,6 +18,7 @@ import axios from "axios";
 import { usePost_feedMutation } from "../../services/fetch.user.service";
 import { CameraIcon, ImageIcon } from "./extra/icons";
 import { GLOBALTYPES } from "../../redux/globalTypes";
+import { refreshFeeds } from "../../redux/features/feeds/refresh";
 
 const useInputState = (initialValue = "") => {
   const [value, setValue] = React.useState(initialValue);
@@ -51,11 +52,11 @@ const PostStatus = ({ navigation }) => {
     const result = await ImagePicker.launchImageLibraryAsync();
 
     // Explore the result
-    console.log(result);
+    // console.log(result);
 
     if (!result.cancelled) {
       setPickedImagePath(result.uri);
-      console.log(result.uri);
+      // console.log(result.uri);
     }
   };
 
@@ -71,11 +72,11 @@ const PostStatus = ({ navigation }) => {
     const result = await ImagePicker.launchCameraAsync();
 
     // Explore the result
-    console.log(result);
+    // console.log(result);
 
     if (!result.cancelled) {
       setPickedImagePath(result.uri);
-      console.log(result.uri);
+      // console.log(result.uri);
     }
   };
 
@@ -104,6 +105,11 @@ const PostStatus = ({ navigation }) => {
 
     // const feed = await post_feeds(formData);
     // const feed = await post_feeds({ message, tag, img, group_id }).unwrap();
+    dispatch(refreshFeeds)
+    
+    setTimeout(() => {
+      navigation.goBack()
+    }, 900);
   };
 
   return (

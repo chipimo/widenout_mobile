@@ -88,6 +88,13 @@ export const usersApi = createApi({
         body: credentials,
       }),
     }),
+    getUserProfile: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "getUserFeeds.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
     protected: builder.mutation<{ message: string }, void>({
       query: () => "protected",
     }),
@@ -120,6 +127,7 @@ export const postApi = createApi({
 export const {
   useLoginMutation,
   useFeedsMutation,
+  useGetUserProfileMutation,
   useProtectedMutation,
   useGetGroupsMutation,
   useGetGroupFeedsMutation,

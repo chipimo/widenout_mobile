@@ -21,7 +21,6 @@ import { GLOBALTYPES } from "../../../redux/globalTypes";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/configureStore";
 import { refreshFeeds } from "../../../redux/features/feeds/refresh";
-import CardList from "./cardList";
 
 export type CommentListProps = Omit<ListProps, "renderItem">;
 
@@ -36,9 +35,7 @@ export const CommentList = (props: any): React.ReactElement => {
     <View style={styles.commentHeader}>
       <Avatar source={{ uri: GLOBALTYPES.imageLink + comment.image }} />
       <TouchableOpacity
-        onPress={() =>
-          props.navigation.navigate("PostUserProfile", { userId: comment.uid })
-        }
+        onPress={() => props.navigation.navigate("PostUserProfile")}
         style={styles.commentAuthorContainer}
       >
         <Text category="h6">
@@ -100,7 +97,7 @@ export const CommentList = (props: any): React.ReactElement => {
       onRefresh={() => dispatch(refreshFeeds)}
       refreshing={refresh}
       {...props}
-      renderItem={(info) => CardList(info, {navigation: props.navigation})}
+      renderItem={renderItem}
     />
   );
 };

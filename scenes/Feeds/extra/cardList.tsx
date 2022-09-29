@@ -6,38 +6,20 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import {
-  Avatar,
-  Button,
-  Card,
-  List,
-  ListProps,
-  Text,
-  Divider,
-} from "@ui-kitten/components";
+import { Avatar, Button, Divider, Text } from "@ui-kitten/components";
 import moment from "moment";
 import { HeartIcon, MessageCircleIcon, MoreHorizontalIcon } from "./icons";
 import { GLOBALTYPES } from "../../../redux/globalTypes";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../redux/configureStore";
-import { refreshFeeds } from "../../../redux/features/feeds/refresh";
-import CardList from "./cardList";
 
-export type CommentListProps = Omit<ListProps, "renderItem">;
-
-export const CommentList = (props: any): React.ReactElement => {
-  const [onRefreshing, setOnRefreshing] = React.useState(false);
-  const { refresh } = useSelector(
-    (state: RootState) => state.user.refreshFeeds
-  );
-  const dispatch = useDispatch();
-
+const CardList = (info: any, navigation: any): React.ReactElement => {
   const renderCommentHeader = (comment: any): React.ReactElement => (
     <View style={styles.commentHeader}>
       <Avatar source={{ uri: GLOBALTYPES.imageLink + comment.image }} />
       <TouchableOpacity
         onPress={() =>
-          props.navigation.navigate("PostUserProfile", { userId: comment.uid })
+          navigation.navigation.navigate("PostUserProfile", {
+            userId: comment.uid,
+          })
         }
         style={styles.commentAuthorContainer}
       >
@@ -57,7 +39,7 @@ export const CommentList = (props: any): React.ReactElement => {
     </View>
   );
 
-  const renderItem = (info: any): React.ReactElement => (
+  return (
     <View style={styles.commentItem}>
       {renderCommentHeader(info.item)}
       <Divider />
@@ -93,15 +75,6 @@ export const CommentList = (props: any): React.ReactElement => {
         </Button>
       </View>
     </View>
-  );
-
-  return (
-    <List
-      onRefresh={() => dispatch(refreshFeeds)}
-      refreshing={refresh}
-      {...props}
-      renderItem={(info) => CardList(info, {navigation: props.navigation})}
-    />
   );
 };
 
@@ -140,3 +113,5 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
   },
 });
+
+export default CardList;

@@ -21,7 +21,7 @@ import { useFeedsMutation } from "../../services/fetch.user.service";
 import { useDispatch, useSelector } from "react-redux";
 import { userFeeds } from "../../redux/features/feeds";
 import { RootState } from "../../redux/configureStore";
-
+import { refreshDone } from "../../redux/features/feeds/refresh";
 
 const keyboardOffset = (height: number): number =>
   Platform.select({
@@ -34,12 +34,15 @@ export default ({ navigation }): React.ReactElement => {
   const [inputComment, setInputComment] = React.useState<string>();
   const [feeds, { isLoading, isError, status, error }] = useFeedsMutation();
   const { list } = useSelector((state: RootState) => state.user.feeds);
+  const { refresh } = useSelector(
+    (state: RootState) => state.user.refreshFeeds
+  );
 
   const dispatch = useDispatch();
 
   React.useEffect(() => {
     getFeeds();
-  }, []);
+  }, [refresh]);
 
   const getFeeds = async () => {
     let user_id = "3";
@@ -47,6 +50,7 @@ export default ({ navigation }): React.ReactElement => {
     const feed = await feeds({ user_id }).unwrap();
     // console.log(feed);
     dispatch(userFeeds(feed));
+    dispatch(refreshDone);
   };
 
   const renderHeader = (): React.ReactElement => (
@@ -88,6 +92,7 @@ export default ({ navigation }): React.ReactElement => {
   return (
     <KeyboardAvoidingView style={styles.container} offset={keyboardOffset}>
       <CommentList
+        navigation={navigation}
         style={styles.list}
         data={list}
         ListHeaderComponent={renderHeader()}
