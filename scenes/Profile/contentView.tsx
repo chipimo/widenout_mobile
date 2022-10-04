@@ -69,7 +69,7 @@ export default (props: UserProfile): React.ReactElement => {
     let uid = id;
 
     const ProfileList = await getUserProfile({ uid }).unwrap();
-    console.log(ProfileList);
+    // console.log(ProfileList);
 
     if (ProfileList) {
       setProfile(ProfileList);

@@ -26,6 +26,7 @@ export type CommentListProps = Omit<ListProps, "renderItem">;
 
 export const CommentList = (props: any): React.ReactElement => {
   const [onRefreshing, setOnRefreshing] = React.useState(false);
+  
   const { refresh } = useSelector(
     (state: RootState) => state.user.refreshFeeds
   );

@@ -95,6 +95,13 @@ export const usersApi = createApi({
         body: credentials,
       }),
     }),
+    getPostComment: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "getComments.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
     protected: builder.mutation<{ message: string }, void>({
       query: () => "protected",
     }),
@@ -132,6 +139,7 @@ export const {
   useGetGroupsMutation,
   useGetGroupFeedsMutation,
   useLoginWithJWTMutation,
+  useGetPostCommentMutation,
   useGetNotificationsMutation,
 } = usersApi;
 
