@@ -39,7 +39,8 @@ export interface postFeedsRequest {
 export const usersApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://192.168.1.134/api/endpoints/",
+    baseUrl: "https://widenout.tk/api/endpoints/",
+    // baseUrl: "http://192.168.1.134/api/endpoints/",
     prepareHeaders: (headers, { getState }) => {
       headers.set("Content-Type", "application/json");
       return headers;

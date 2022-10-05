@@ -151,7 +151,7 @@ const CardList = (props: any): React.ReactElement => {
       <View>
         {info.item.value !== "" ? (
           <LightBoxImage
-            style={{ height: 200, width: 200 }}
+            style={styles.stretch}
             source={{
               uri: GLOBALTYPES.uploadsLink + info.item.value,
             }}
@@ -194,7 +194,7 @@ const CardList = (props: any): React.ReactElement => {
         <View>
           <Button appearance="ghost" size="tiny">
             Show more comments
-          </Button>
+          </Button> 
         </View>
       ) : null}
     </View>
