@@ -5,16 +5,18 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  Modal,
 } from "react-native";
 import { Avatar, Button, Divider, Text } from "@ui-kitten/components";
 import moment from "moment";
-import Lightbox from "react-native-lightbox-v2";
-import { HeartIcon, MessageCircleIcon, MoreHorizontalIcon } from "./icons";
+import { Like1, Like2, MessageCircleIcon, MoreHorizontalIcon } from "./icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import ImageViewer from "react-native-image-zoom-viewer";
+
 import { GLOBALTYPES } from "../../../redux/globalTypes";
 import { useGetPostCommentMutation } from "../../../services/dist/fetch.user.service";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/configureStore";
-import { MaterialIcons } from "@expo/vector-icons";
 
 const CardList = (props: any): React.ReactElement => {
   const { info, navigation } = props;
@@ -22,43 +24,23 @@ const CardList = (props: any): React.ReactElement => {
   const [getPostComment, { isLoading, isError, status, error }] =
     useGetPostCommentMutation();
   const [comments, setComments] = React.useState([]);
+  const [images, setImages] = React.useState([]);
+  const [visible, setVisible] = React.useState(false);
 
   React.useEffect(() => {
-    // console.log(user)
+    // console.log(info)
     getComment();
   }, []);
 
-  const LightBoxHeader = ({ close }) => {
+  const LightBoxHeader = () => {
     return (
       <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={close}>
+        <TouchableOpacity onPress={() => setVisible(false)}>
           <Text style={styles.closeButton}>×</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.reportButton}>
-          <MaterialIcons
-            name="report"
-            color="#ffff00"
-            style={{ fontSize: 20 }}
-          />
         </TouchableOpacity>
       </View>
     );
   };
-
-  const activeProps = {
-    resizeMode: "contain",
-    flex: 1,
-    width: null,
-  };
-
-  const LightBoxImage = ({ source, style, ...others }) => (
-    <Lightbox
-      activeProps={activeProps}
-      renderHeader={(close) => <LightBoxHeader close={close} {...others} />}
-    >
-      <Image style={style} source={source} resizeMode="contain" />
-    </Lightbox>
-  );
 
   const getComment = async () => {
     const post_id = info.item.id;
@@ -66,6 +48,14 @@ const CardList = (props: any): React.ReactElement => {
 
     setComments(comment);
     // console.log(comment);
+    setImages([
+      {
+        url: GLOBALTYPES.uploadsLink + info.item.value,
+        props: {
+          // headers: ...
+        },
+      },
+    ]);
   };
 
   const renderCommentHeader = (comment: any): React.ReactElement => (
@@ -113,8 +103,8 @@ const CardList = (props: any): React.ReactElement => {
     </View>
   );
 
-  const renderPostComment = (comment: any): React.ReactElement => (
-    <View style={styles.PostComment}>
+  const renderPostComment = (comment: any, index): React.ReactElement => (
+    <View key={index} style={styles.PostComment}>
       <Avatar source={{ uri: GLOBALTYPES.imageLink + comment.image }} />
       <TouchableOpacity
         onPress={() =>
@@ -150,19 +140,25 @@ const CardList = (props: any): React.ReactElement => {
       </View>
       <View>
         {info.item.value !== "" ? (
-          <LightBoxImage
-            style={styles.stretch}
-            source={{
-              uri: GLOBALTYPES.uploadsLink + info.item.value,
-            }}
-          />
-        ) : // <Image
-        //   resizeMode="contain"
-        //   style={styles.stretch}
-        //   source={{ uri: GLOBALTYPES.uploadsLink + info.item.value }}
-        // />
-        null}
+          <TouchableOpacity onPress={() => setVisible(true)}>
+            <Image
+              resizeMode="contain"
+              style={styles.stretch}
+              source={{ uri: GLOBALTYPES.uploadsLink + info.item.value }}
+            />
+          </TouchableOpacity>
+        ) : null}
       </View>
+      <Modal visible={visible} transparent={true}>
+        <ImageViewer
+          enableImageZoom
+          onSaveToCamera={true}
+          enableSwipeDown
+          onSwipeDown={() => setVisible(false)}
+          renderFooter={() => <LightBoxHeader />}
+          imageUrls={images}
+        />
+      </Modal>
       <Divider />
       <View style={styles.commentReactionsContainer}>
         <Button
@@ -176,16 +172,16 @@ const CardList = (props: any): React.ReactElement => {
         <Button
           style={styles.iconButton}
           appearance="ghost"
-          status="danger"
-          accessoryLeft={HeartIcon}
+          status="basic"
+          accessoryLeft={info.item.likes != "0" ?Like1:Like2}
         >
-          {`${info.item.likes.length}`}
+          {info.item.likes != "0" ? `${info.item.likes}` : ``}
         </Button>
       </View>
       {comments.length !== 0 ? <Divider /> : null}
       <View>
-        {comments.map((list: any) => {
-          return renderPostComment(list);
+        {comments.map((list: any, index) => {
+          return renderPostComment(list, index);
         })}
       </View>
       <Divider />
@@ -194,7 +190,7 @@ const CardList = (props: any): React.ReactElement => {
         <View>
           <Button appearance="ghost" size="tiny">
             Show more comments
-          </Button> 
+          </Button>
         </View>
       ) : null}
     </View>
