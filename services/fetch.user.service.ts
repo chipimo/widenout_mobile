@@ -103,6 +103,13 @@ export const usersApi = createApi({
         body: credentials,
       }),
     }),
+    postLike: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "like.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
     protected: builder.mutation<{ message: string }, void>({
       query: () => "protected",
     }),
@@ -141,6 +148,7 @@ export const {
   useGetGroupFeedsMutation,
   useLoginWithJWTMutation,
   useGetPostCommentMutation,
+  usePostLikeMutation,
   useGetNotificationsMutation,
 } = usersApi;
 

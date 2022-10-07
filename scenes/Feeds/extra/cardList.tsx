@@ -14,7 +14,10 @@ import { MaterialIcons } from "@expo/vector-icons";
 import ImageViewer from "react-native-image-zoom-viewer";
 
 import { GLOBALTYPES } from "../../../redux/globalTypes";
-import { useGetPostCommentMutation } from "../../../services/dist/fetch.user.service";
+import {
+  useGetPostCommentMutation,
+  usePostLikeMutation,
+} from "../../../services/dist/fetch.user.service";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/configureStore";
 
@@ -23,12 +26,13 @@ const CardList = (props: any): React.ReactElement => {
   const { user } = useSelector((state: RootState) => state.user.user);
   const [getPostComment, { isLoading, isError, status, error }] =
     useGetPostCommentMutation();
+  const [postLike, {}] = usePostLikeMutation();
   const [comments, setComments] = React.useState([]);
   const [images, setImages] = React.useState([]);
   const [visible, setVisible] = React.useState(false);
+  const [likeing, setLikeing] = React.useState(false);
 
   React.useEffect(() => {
-    // console.log(info)
     getComment();
   }, []);
 
@@ -63,7 +67,7 @@ const CardList = (props: any): React.ReactElement => {
       <Avatar source={{ uri: GLOBALTYPES.imageLink + comment.image }} />
       <TouchableOpacity
         onPress={() =>
-          navigation.navigation.navigate("PostUserProfile", {
+          navigation.navigate("PostUserProfile", {
             userId: comment.uid,
           })
         }
@@ -90,7 +94,7 @@ const CardList = (props: any): React.ReactElement => {
       <Avatar source={{ uri: GLOBALTYPES.imageLink + comment.image }} />
       <TouchableOpacity
         onPress={() =>
-          navigation.navigation.navigate("PostUserProfile", {
+          navigation.navigate("PostComments", {
             userId: comment.uid,
           })
         }
@@ -106,12 +110,12 @@ const CardList = (props: any): React.ReactElement => {
   const renderPostComment = (comment: any, index): React.ReactElement => (
     <View key={index} style={styles.PostComment}>
       <Avatar source={{ uri: GLOBALTYPES.imageLink + comment.image }} />
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigation.navigate("PostUserProfile", {
-            userId: comment.uid,
-          })
-        }
+      <View
+        // onPress={() =>
+        //   navigation.navigate("PostComments", {
+        //     userId: comment.uid,
+        //   })
+        // }
         style={styles.PostCommentBody}
       >
         <Text appearance="hint" category="c1">
@@ -121,7 +125,7 @@ const CardList = (props: any): React.ReactElement => {
           {comment.first_name + " " + comment.last_name}
         </Text>
         <Text>{comment.message}</Text>
-      </TouchableOpacity>
+      </View>
       {/* <Button
         style={styles.iconButton}
         appearance="ghost"
@@ -130,6 +134,15 @@ const CardList = (props: any): React.ReactElement => {
       /> */}
     </View>
   );
+
+  const LikePost = async (id) => {
+    let user_id = user.idu;
+    let post = id;
+    let type = 1;
+
+    const like = await postLike({ user_id, post, type }).unwrap();
+    console.log(like);
+  };
 
   return (
     <View style={styles.commentItem}>
@@ -140,7 +153,10 @@ const CardList = (props: any): React.ReactElement => {
       </View>
       <View>
         {info.item.value !== "" ? (
-          <TouchableOpacity onPress={() => setVisible(true)}>
+          <TouchableOpacity
+            activeOpacity={0.89}
+            onPress={() => setVisible(true)}
+          >
             <Image
               resizeMode="contain"
               style={styles.stretch}
@@ -170,10 +186,12 @@ const CardList = (props: any): React.ReactElement => {
           {comments.length !== 0 ? `${comments.length}` : ``}
         </Button>
         <Button
+          onPress={() => LikePost(info.item.id)}
+          disabled={likeing}
           style={styles.iconButton}
           appearance="ghost"
           status="basic"
-          accessoryLeft={info.item.likes != "0" ?Like1:Like2}
+          accessoryLeft={info.item.likes != "0" ? Like1 : Like2}
         >
           {info.item.likes != "0" ? `${info.item.likes}` : ``}
         </Button>
