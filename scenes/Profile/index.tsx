@@ -32,7 +32,7 @@ const UserProfile = (props: UserProfile) => {
   const onBookmarkActionPress = (): void => {};
 
   const renderBackAction = (): React.ReactElement => (
-    <TopNavigationAction icon={ArrowIosBackIcon} onPress={navigation.goBack} />
+    <TopNavigationAction style={{ padding:8}} icon={ArrowIosBackIcon} onPress={navigation.goBack} />
   );
 
   const renderBookmarkAction = (): React.ReactElement => (
