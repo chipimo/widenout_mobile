@@ -95,7 +95,7 @@ const CardList = (props: any): React.ReactElement => {
       <TouchableOpacity
         onPress={() =>
           navigation.navigate("PostComments", {
-            userId: comment.uid,
+            comments,
           })
         }
         style={styles.PostCommentContainer}

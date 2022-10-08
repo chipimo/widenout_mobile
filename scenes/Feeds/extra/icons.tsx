@@ -2,6 +2,11 @@ import React from 'react';
 import { ImageStyle } from 'react-native';
 import { Icon, IconElement } from '@ui-kitten/components';
 import { AntDesign } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+
+export const SendIcon = (style: ImageStyle): IconElement => (
+  <Ionicons name="send" size={24} color="gray" />
+);
 
 export const HeartIcon = (style: ImageStyle): IconElement => (
   <Icon {...style} name='heart'/>
