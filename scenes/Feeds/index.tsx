@@ -37,7 +37,8 @@ export default ({ navigation }): React.ReactElement => {
   const { refresh } = useSelector(
     (state: RootState) => state.user.refreshFeeds
   );
-
+  const { user } = useSelector((state: RootState) => state.user.user);
+  
   const dispatch = useDispatch();
 
   React.useEffect(() => {
@@ -45,10 +46,11 @@ export default ({ navigation }): React.ReactElement => {
   }, [refresh]);
 
   const getFeeds = async () => {
-    let user_id = "3";
+    let user_id =  user.idu;
 
     const feed = await feeds({ user_id }).unwrap();
     // console.log(feed);
+
     dispatch(userFeeds(feed));
     dispatch(refreshDone);
   };

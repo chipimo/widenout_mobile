@@ -110,22 +110,6 @@ export const usersApi = createApi({
         body: credentials,
       }),
     }),
-    protected: builder.mutation<{ message: string }, void>({
-      query: () => "protected",
-    }),
-  }),
-});
-
-export const postApi = createApi({
-  reducerPath: "postApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://192.168.1.134/api/endpoints/",
-    prepareHeaders: (headers, { getState }) => {
-      headers.set("Content-Type", "multipart/form-data");
-      return headers;
-    },
-  }),
-  endpoints: (builder) => ({
     post_feed: builder.mutation<any, any>({
       query: (credentials) => ({
         url: "postFeeds.php",
@@ -139,6 +123,29 @@ export const postApi = createApi({
   }),
 });
 
+// export const postApi = createApi({
+//   reducerPath: "postApi",
+//   baseQuery: fetchBaseQuery({
+//     baseUrl: "http://192.168.1.134/api/endpoints/",
+//     prepareHeaders: (headers, { getState }) => {
+//       headers.set("Content-Type", "multipart/form-data");
+//       return headers;
+//     },
+//   }),
+//   endpoints: (builder) => ({
+//     post_feed: builder.mutation<any, any>({
+//       query: (credentials) => ({
+//         url: "postFeeds.php",
+//         method: "POST",
+//         body: credentials,
+//       }),
+//     }),
+//     protected: builder.mutation<{ message: string }, void>({
+//       query: () => "protected",
+//     }),
+//   }),
+// });
+
 export const {
   useLoginMutation,
   useFeedsMutation,
@@ -150,6 +157,7 @@ export const {
   useGetPostCommentMutation,
   usePostLikeMutation,
   useGetNotificationsMutation,
+  usePost_feedMutation,
 } = usersApi;
 
-export const { usePost_feedMutation } = postApi;
+// export const { usePost_feedMutation } = postApi;

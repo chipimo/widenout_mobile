@@ -6,10 +6,29 @@ import {
   TouchableOpacity,
   View,
   Modal,
+  ImageStyle,
 } from "react-native";
-import { Avatar, Button, Divider, Text } from "@ui-kitten/components";
+import {
+  Avatar,
+  Button,
+  Divider,
+  Text,
+  ButtonElement,
+  IndexPath,
+  OverflowMenu,
+  OverflowMenuElement,
+  MenuItem,
+  IconElement,
+} from "@ui-kitten/components";
 import moment from "moment";
-import { Like1, Like2, MessageCircleIcon, MoreHorizontalIcon } from "./icons";
+import {
+  DeleteIcon,
+  EditIcon,
+  Like1,
+  Like2,
+  MessageCircleIcon,
+  MoreHorizontalIcon,
+} from "./icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import ImageViewer from "react-native-image-zoom-viewer";
 
@@ -21,6 +40,12 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/configureStore";
 
+export interface OverflowMenuItemType {
+  title: string;
+  accessoryLeft?: (style: ImageStyle) => IconElement;
+  disabled?: boolean;
+}
+
 const CardList = (props: any): React.ReactElement => {
   const { info, navigation } = props;
   const { user } = useSelector((state: RootState) => state.user.user);
@@ -30,7 +55,19 @@ const CardList = (props: any): React.ReactElement => {
   const [comments, setComments] = React.useState([]);
   const [images, setImages] = React.useState([]);
   const [visible, setVisible] = React.useState(false);
+  const [menuVisible, setMenuVisible] = React.useState(false);
   const [likeing, setLikeing] = React.useState(false);
+
+  const [selectedIndex, setSelectedIndex] = React.useState<IndexPath>(null);
+
+  const toggleMenu = (): void => {
+    setMenuVisible(!menuVisible);
+  };
+
+  const onSelect = (index: IndexPath): void => {
+    setSelectedIndex(index);
+    toggleMenu();
+  };
 
   React.useEffect(() => {
     getComment();
@@ -62,6 +99,54 @@ const CardList = (props: any): React.ReactElement => {
     ]);
   };
 
+  const renderButton = (): ButtonElement => (
+    <Button
+      onPress={toggleMenu}
+      style={styles.iconButton}
+      appearance="ghost"
+      status="basic"
+      accessoryLeft={MoreHorizontalIcon}
+    />
+  );
+
+  const friendWithIconMenuItems: OverflowMenuItemType[] = [
+    {
+      title: "Report",
+      accessoryLeft: EditIcon,
+    }
+  ];
+
+  const withIconMenuItems: OverflowMenuItemType[] = [
+    {
+      title: "Edit",
+      accessoryLeft: EditIcon,
+    },
+    {
+      title: "Delete",
+      accessoryLeft: DeleteIcon,
+    },
+    {
+      title: "Public",
+      accessoryLeft: DeleteIcon,
+    },
+    {
+      title: "Friends",
+      accessoryLeft: DeleteIcon,
+    },
+    {
+      title: "Private",
+      accessoryLeft: DeleteIcon,
+    },
+  ];
+
+  const renderData = withIconMenuItems.map((el, index) => (
+    <MenuItem key={index} {...el} />
+  ));
+
+  const renderFriendData = friendWithIconMenuItems.map((el, index) => (
+    <MenuItem key={index} {...el} />
+  ));
+
   const renderCommentHeader = (comment: any): React.ReactElement => (
     <View style={styles.commentHeader}>
       <Avatar source={{ uri: GLOBALTYPES.imageLink + comment.image }} />
@@ -80,12 +165,16 @@ const CardList = (props: any): React.ReactElement => {
           {moment(comment.time).fromNow()}
         </Text>
       </TouchableOpacity>
-      <Button
-        style={styles.iconButton}
-        appearance="ghost"
-        status="basic"
-        accessoryLeft={MoreHorizontalIcon}
-      />
+
+      <OverflowMenu
+        visible={menuVisible}
+        selectedIndex={selectedIndex}
+        onSelect={onSelect}
+        onBackdropPress={toggleMenu}
+        anchor={renderButton}
+      >
+        {user.idu === comment.idu? renderData: renderFriendData}
+      </OverflowMenu>
     </View>
   );
 
@@ -178,6 +267,11 @@ const CardList = (props: any): React.ReactElement => {
       <Divider />
       <View style={styles.commentReactionsContainer}>
         <Button
+          onPress={() =>
+            navigation.navigate("PostComments", {
+              comments,
+            })
+          }
           style={styles.iconButton}
           appearance="ghost"
           status="basic"
@@ -206,7 +300,15 @@ const CardList = (props: any): React.ReactElement => {
       <View>{renderPostHeader(user)}</View>
       {comments.length !== 0 ? (
         <View>
-          <Button appearance="ghost" size="tiny">
+          <Button
+            onPress={() =>
+              navigation.navigate("PostComments", {
+                comments,
+              })
+            }
+            appearance="ghost"
+            size="tiny"
+          >
             Show more comments
           </Button>
         </View>

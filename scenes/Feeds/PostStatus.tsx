@@ -9,16 +9,22 @@ import {
   Button,
   Menu,
   MenuItem,
+  Spinner,
 } from "@ui-kitten/components";
 import { AntDesign } from "@expo/vector-icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 
-import { usePost_feedMutation } from "../../services/fetch.user.service";
+import {
+  useFeedsMutation,
+  usePost_feedMutation,
+} from "../../services/fetch.user.service";
 import { CameraIcon, ImageIcon } from "./extra/icons";
 import { GLOBALTYPES } from "../../redux/globalTypes";
-import { refreshFeeds } from "../../redux/features/feeds/refresh";
+import { refreshDone, refreshFeeds } from "../../redux/features/feeds/refresh";
+import { userFeeds } from "../../redux/features/feeds";
+import { RootState } from "../../redux/configureStore";
 
 const useInputState = (initialValue = "") => {
   const [value, setValue] = React.useState(initialValue);
@@ -36,8 +42,17 @@ const PostStatus = ({ navigation }) => {
   const [img, setImg] = React.useState("");
   const [selectedIndex, setSelectedIndex] = React.useState(null);
   const [group_id, setGroup_id] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const { user } = useSelector((state: RootState) => state.user.user);
 
   const [pickedImagePath, setPickedImagePath] = React.useState(null);
+  const [feeds] = useFeedsMutation();
+
+  const LoadingIndicator = (props) => (
+    <View style={[props.style, styles.indicator]}>
+      <Spinner size="small" />
+    </View>
+  );
 
   const showImagePicker = async () => {
     // Ask the user for the permission to access the media library
@@ -81,35 +96,26 @@ const PostStatus = ({ navigation }) => {
   };
 
   const getFeeds = async () => {
-    let uid = "3";
-    const formData = new FormData();
-    formData.append("file", pickedImagePath);
+    setLoading(true);
 
-    // console.log(formData);
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    };
-    
-    const fileURL = await axios
-      .post(`${GLOBALTYPES.apiEndPoint}/postFeeds.php`, formData, config)
-      .then((response) => {
-        const { data } = response;
+    let uuid =  user.idu;
 
-        console.log(response);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    const feed = await post_feeds({ message, tag, img, group_id, uuid }).unwrap();
 
-    // const feed = await post_feeds(formData);
-    // const feed = await post_feeds({ message, tag, img, group_id }).unwrap();
-    dispatch(refreshFeeds)
-    
-    setTimeout(() => {
-      navigation.goBack()
-    }, 900);
+    if (feed === "Posted") {
+      dispatch(refreshFeeds);
+
+      let user_id =  user.idu;
+
+      const feedList = await feeds({ user_id }).unwrap();
+
+      dispatch(userFeeds(feedList));
+      dispatch(refreshDone);
+
+      setTimeout(() => {
+        navigation.goBack();
+      }, 900);
+    }
   };
 
   return (
@@ -165,7 +171,12 @@ const PostStatus = ({ navigation }) => {
       </View>
 
       <View style={{ paddingLeft: 10, paddingRight: 10 }}>
-        <Button onPress={getFeeds} status="info">
+        <Button
+          disabled={loading}
+          accessoryLeft={loading ? LoadingIndicator : null}
+          onPress={getFeeds}
+          status="info"
+        >
           POST
         </Button>
       </View>
@@ -211,6 +222,10 @@ const themedStyles = StyleService.create({
     marginHorizontal: 4,
     marginTop: 2,
     marginBottom: 2,
+  },
+  indicator: {
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

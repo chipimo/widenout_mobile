@@ -27,7 +27,7 @@ export const TopBarSlice = createSlice({
       action: PayloadAction<any>
     ) => {
       state.showTopBar = false;
-      console.log('hey')
+      // console.log('hey')
     },
   },
 });
