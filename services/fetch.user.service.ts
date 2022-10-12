@@ -39,8 +39,8 @@ export interface postFeedsRequest {
 export const usersApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://widenout.tk/api/endpoints/",
-    // baseUrl: "http://192.168.1.134/api/endpoints/",
+    // baseUrl: "https://widenout.tk/api/endpoints/",
+    baseUrl: "http://192.168.1.134/api/endpoints/",
     prepareHeaders: (headers, { getState }) => {
       headers.set("Content-Type", "application/json");
       return headers;
@@ -117,6 +117,13 @@ export const usersApi = createApi({
         body: credentials,
       }),
     }),
+    post_comment: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "addComment.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
     protected: builder.mutation<{ message: string }, void>({
       query: () => "protected",
     }),
@@ -158,6 +165,7 @@ export const {
   usePostLikeMutation,
   useGetNotificationsMutation,
   usePost_feedMutation,
+  usePost_commentMutation,
 } = usersApi;
 
 // export const { usePost_feedMutation } = postApi;

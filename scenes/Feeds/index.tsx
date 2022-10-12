@@ -49,7 +49,7 @@ export default ({ navigation }): React.ReactElement => {
     let user_id =  user.idu;
 
     const feed = await feeds({ user_id }).unwrap();
-    // console.log(feed);
+    // console.log(refresh);
 
     dispatch(userFeeds(feed));
     dispatch(refreshDone);
@@ -58,7 +58,7 @@ export default ({ navigation }): React.ReactElement => {
   const renderHeader = (): React.ReactElement => (
     <Layout style={styles.header} level="1">
       <Text style={styles.descriptionLabel} category="s1">
-        Update your status
+        Update your status 
       </Text>
       <TouchableOpacity onPress={() => navigation.navigate("PostStatus")}>
         {/* <Avatar source={require("../../../assets/images/20210507_164638.jpg")} /> */}

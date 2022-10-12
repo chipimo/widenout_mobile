@@ -4,6 +4,7 @@ import {
   Platform,
   View,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import {
   Avatar,
@@ -49,11 +50,11 @@ export default ({ navigation }): React.ReactElement => {
 
   return (
     <KeyboardAvoidingView style={styles.container} offset={keyboardOffset}>
-      <View>
-        {groupCards.map((list) => (
-          <GroupCard navigate={navigation} items={list} />
+      <ScrollView>
+        {groupCards.map((list, index) => (
+          <GroupCard key={index} navigate={navigation} items={list} />
         ))}
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };

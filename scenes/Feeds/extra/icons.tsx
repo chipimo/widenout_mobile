@@ -24,7 +24,15 @@ export const Like1 = (style: ImageStyle): IconElement => (
   <AntDesign name="like1" size={20} color="black" />
 );
 
+export const Like1light = (style: ImageStyle): IconElement => (
+  <AntDesign name="like1" size={20} color="gray" />
+);
+
 export const Like2 = (style: ImageStyle): IconElement => (
+  <AntDesign name="like2" size={20} color="gray" />
+);
+
+export const Like2light = (style: ImageStyle): IconElement => (
   <AntDesign name="like2" size={20} color="gray" />
 );
 

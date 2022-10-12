@@ -26,6 +26,8 @@ import {
   EditIcon,
   Like1,
   Like2,
+  Like1light,
+  Like2light,
   MessageCircleIcon,
   MoreHorizontalIcon,
 } from "./icons";
@@ -37,8 +39,14 @@ import {
   useGetPostCommentMutation,
   usePostLikeMutation,
 } from "../../../services/dist/fetch.user.service";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/configureStore";
+import {
+  refreshDone,
+  refreshFeeds,
+} from "../../../redux/features/feeds/refresh";
+import { userFeeds } from "../../../redux/features/feeds";
+import { useFeedsMutation } from "../../../services/fetch.user.service";
 
 export interface OverflowMenuItemType {
   title: string;
@@ -49,6 +57,7 @@ export interface OverflowMenuItemType {
 const CardList = (props: any): React.ReactElement => {
   const { info, navigation } = props;
   const { user } = useSelector((state: RootState) => state.user.user);
+
   const [getPostComment, { isLoading, isError, status, error }] =
     useGetPostCommentMutation();
   const [postLike, {}] = usePostLikeMutation();
@@ -59,6 +68,8 @@ const CardList = (props: any): React.ReactElement => {
   const [likeing, setLikeing] = React.useState(false);
 
   const [selectedIndex, setSelectedIndex] = React.useState<IndexPath>(null);
+  const [feeds] = useFeedsMutation();
+  const dispatch = useDispatch();
 
   const toggleMenu = (): void => {
     setMenuVisible(!menuVisible);
@@ -88,7 +99,7 @@ const CardList = (props: any): React.ReactElement => {
     const comment = await getPostComment({ post_id }).unwrap();
 
     setComments(comment);
-    // console.log(comment);
+   
     setImages([
       {
         url: GLOBALTYPES.uploadsLink + info.item.value,
@@ -113,7 +124,7 @@ const CardList = (props: any): React.ReactElement => {
     {
       title: "Report",
       accessoryLeft: EditIcon,
-    }
+    },
   ];
 
   const withIconMenuItems: OverflowMenuItemType[] = [
@@ -173,7 +184,7 @@ const CardList = (props: any): React.ReactElement => {
         onBackdropPress={toggleMenu}
         anchor={renderButton}
       >
-        {user.idu === comment.idu? renderData: renderFriendData}
+        {user.idu === comment.idu ? renderData : renderFriendData}
       </OverflowMenu>
     </View>
   );
@@ -185,6 +196,7 @@ const CardList = (props: any): React.ReactElement => {
         onPress={() =>
           navigation.navigate("PostComments", {
             comments,
+            post_id: info.item.id,
           })
         }
         style={styles.PostCommentContainer}
@@ -225,12 +237,21 @@ const CardList = (props: any): React.ReactElement => {
   );
 
   const LikePost = async (id) => {
+    setLikeing(true);
     let user_id = user.idu;
     let post = id;
-    let type = 1;
+    let type = 0;
 
     const like = await postLike({ user_id, post, type }).unwrap();
-    console.log(like);
+
+    dispatch(refreshFeeds);
+
+    const feedList = await feeds({ user_id }).unwrap();
+
+    dispatch(userFeeds(feedList));
+    dispatch(refreshDone);
+
+    setLikeing(false);
   };
 
   return (
@@ -270,6 +291,7 @@ const CardList = (props: any): React.ReactElement => {
           onPress={() =>
             navigation.navigate("PostComments", {
               comments,
+              post_id: info.item.id,
             })
           }
           style={styles.iconButton}
@@ -285,7 +307,9 @@ const CardList = (props: any): React.ReactElement => {
           style={styles.iconButton}
           appearance="ghost"
           status="basic"
-          accessoryLeft={info.item.likes != "0" ? Like1 : Like2}
+          accessoryLeft={
+            info.item.likes != "0" ? (likeing ? Like1light : Like1) : Like2
+          }
         >
           {info.item.likes != "0" ? `${info.item.likes}` : ``}
         </Button>
@@ -293,7 +317,7 @@ const CardList = (props: any): React.ReactElement => {
       {comments.length !== 0 ? <Divider /> : null}
       <View>
         {comments.map((list: any, index) => {
-          return renderPostComment(list, index);
+          if (index < 2) return renderPostComment(list, index);
         })}
       </View>
       <Divider />
