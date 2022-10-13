@@ -17,8 +17,12 @@ import {
 } from "@ui-kitten/components";
 import { KeyboardAvoidingView } from "./extra/keyboard-avoiding-view.component";
 import { CommentList } from "./extra/comment-list.component";
-import { CameraIcon, Joined, VideoIcon } from "./extra/icons";
-import { useGetGroupFeedsMutation } from "../../services/fetch.user.service";
+import { CameraIcon, Joined, LeaveIcon, VideoIcon } from "./extra/icons";
+import {
+  useGetGroupFeedsMutation,
+  useGetGroupMembersMutation,
+  useGetGroupMemberDataMutation,
+} from "../../services/fetch.user.service";
 import { useDispatch, useSelector } from "react-redux";
 import { userFeeds } from "../../redux/features/feeds";
 import { RootState } from "../../redux/configureStore";
@@ -34,8 +38,13 @@ export default ({ navigation }): React.ReactElement => {
   const styles = useStyleSheet(themedStyles);
   const [getGroupFeeds, { isLoading, isError, status, error }] =
     useGetGroupFeedsMutation();
+  const [getGroupMembers] = useGetGroupMembersMutation();
+  const [getGroupMemberData] = useGetGroupMemberDataMutation();
   const { list } = useSelector((state: RootState) => state.user.feeds);
-  const [groupComments, setGroupComments]= React.useState([])
+  const [groupComments, setGroupComments] = React.useState([]);
+  const [groupMemmbers, setGroupMemmbers] = React.useState([]);
+  const [groupMemberData, setGroupMemberData] = React.useState(false);
+  const { user } = useSelector((state: RootState) => state.user.user);
 
   const dispatch = useDispatch();
 
@@ -45,6 +54,8 @@ export default ({ navigation }): React.ReactElement => {
 
   React.useEffect(() => {
     getFeeds();
+    getGroupMembersFunc();
+    getGroupMemberDataFunc();
   }, []);
 
   const getFeeds = async () => {
@@ -54,6 +65,25 @@ export default ({ navigation }): React.ReactElement => {
     // console.log(groupFeed);
     setGroupComments(groupFeed);
     // dispatch(userFeeds(groupFeed));
+  };
+
+  const getGroupMembersFunc = async () => {
+    let group_id = id;
+
+    const groupMembers = await getGroupMembers({ group_id }).unwrap();
+    setGroupMemmbers(groupMembers);
+  };
+
+  const getGroupMemberDataFunc = async () => {
+    let group_id = id;
+    let user_id = user.idu;
+
+    const groupMember = await getGroupMemberData({
+      group_id,
+      user_id,
+    }).unwrap();
+    if (groupMember) setGroupMemberData(groupMember);
+    console.log(groupMember);
   };
 
   const renderHeader = (): React.ReactElement => (
@@ -74,22 +104,37 @@ export default ({ navigation }): React.ReactElement => {
               style={{ flexDirection: "row", marginLeft: 10, marginTop: 2 }}
             >
               <Text style={styles.text} appearance="hint">
-                {members != 1 ? `${members} members` : `${members} member`}
+                {groupMemmbers.length != 1
+                  ? `${groupMemmbers.length} members`
+                  : `${groupMemmbers.length} member`}
               </Text>
             </View>
           </View>
           <Text style={styles.text}>{description}</Text>
           <View style={{ width: "40%" }}>
-            <Button
-              size="tiny"
-              disabled={false}
-              onPress={() => {
-                getFeeds();
-              }}
-              accessoryLeft={Joined}
-            >
-              {"Joined"}
-            </Button>
+            {groupMemberData ? (
+              <Button
+                size="tiny"
+                disabled={false}
+                onPress={() => {
+                  getFeeds();
+                }}
+                accessoryLeft={Joined}
+              >
+                {"Leave Group"}
+              </Button>
+            ) : (
+              <Button
+                size="tiny"
+                disabled={false}
+                onPress={() => {
+                  getFeeds();
+                }}
+                accessoryLeft={LeaveIcon}
+              >
+                {"Join Group"}
+              </Button>
+            )}
           </View>
         </View>
         <Divider />

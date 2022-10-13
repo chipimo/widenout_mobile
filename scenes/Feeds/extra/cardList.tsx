@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   Image,
-  ListRenderItemInfo,
+  Platform,
   StyleSheet,
   TouchableOpacity,
   View,
   Modal,
   ImageStyle,
+  TextInput,
+  ScrollView,
 } from "react-native";
 import {
   Avatar,
@@ -19,8 +21,10 @@ import {
   OverflowMenuElement,
   MenuItem,
   IconElement,
+  Spinner,
 } from "@ui-kitten/components";
 import moment from "moment";
+import Toast from "react-native-root-toast";
 import {
   DeleteIcon,
   EditIcon,
@@ -30,14 +34,16 @@ import {
   Like2light,
   MessageCircleIcon,
   MoreHorizontalIcon,
+  SendIcon,
 } from "./icons";
-import { MaterialIcons } from "@expo/vector-icons";
+import BottomSheet from "react-native-gesture-bottom-sheet";
 import ImageViewer from "react-native-image-zoom-viewer";
 
 import { GLOBALTYPES } from "../../../redux/globalTypes";
 import {
   useGetPostCommentMutation,
   usePostLikeMutation,
+  useDelete_postMutation,
 } from "../../../services/dist/fetch.user.service";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/configureStore";
@@ -46,7 +52,11 @@ import {
   refreshFeeds,
 } from "../../../redux/features/feeds/refresh";
 import { userFeeds } from "../../../redux/features/feeds";
-import { useFeedsMutation } from "../../../services/fetch.user.service";
+import {
+  useFeedsMutation,
+  useUpdate_postMutation,
+} from "../../../services/fetch.user.service";
+import { KeyboardAvoidingView } from "./keyboard-avoiding-view.component";
 
 export interface OverflowMenuItemType {
   title: string;
@@ -58,27 +68,50 @@ const CardList = (props: any): React.ReactElement => {
   const { info, navigation } = props;
   const { user } = useSelector((state: RootState) => state.user.user);
 
-  const [getPostComment, { isLoading, isError, status, error }] =
-    useGetPostCommentMutation();
   const [postLike, {}] = usePostLikeMutation();
   const [comments, setComments] = React.useState([]);
   const [images, setImages] = React.useState([]);
   const [visible, setVisible] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [message, setMessage] = React.useState("");
   const [menuVisible, setMenuVisible] = React.useState(false);
   const [likeing, setLikeing] = React.useState(false);
 
   const [selectedIndex, setSelectedIndex] = React.useState<IndexPath>(null);
+  const [getPostComment, { isLoading, isError, status, error }] =
+    useGetPostCommentMutation();
   const [feeds] = useFeedsMutation();
+  const [update_post] = useUpdate_postMutation();
+  const [delete_post] = useDelete_postMutation();
+  const bottomSheet = useRef();
   const dispatch = useDispatch();
 
   const toggleMenu = (): void => {
     setMenuVisible(!menuVisible);
   };
 
-  const onSelect = (index: IndexPath): void => {
-    setSelectedIndex(index);
-    toggleMenu();
+  const showToastMsg = (msg) => {
+    let toast = Toast.show(msg, {
+      duration: Toast.durations.SHORT,
+      position: Toast.positions.BOTTOM,
+      shadow: true,
+      animation: true,
+      hideOnPress: true,
+      delay: 0,
+    });
   };
+
+  const LoadingIndicator = (props) => (
+    <View style={[props.style, styles.indicator]}>
+      <Spinner size="small" />
+    </View>
+  );
+
+  const keyboardOffset = (height: number): number =>
+    Platform.select({
+      android: 0,
+      ios: height,
+    });
 
   React.useEffect(() => {
     getComment();
@@ -94,12 +127,22 @@ const CardList = (props: any): React.ReactElement => {
     );
   };
 
+  const getFeeds = async () => {
+    let user_id = user.idu;
+    dispatch(refreshFeeds);
+
+    const feedList = await feeds({ user_id }).unwrap();
+
+    dispatch(userFeeds(feedList));
+    dispatch(refreshDone);
+  };
+
   const getComment = async () => {
     const post_id = info.item.id;
     const comment = await getPostComment({ post_id }).unwrap();
 
     setComments(comment);
-   
+
     setImages([
       {
         url: GLOBALTYPES.uploadsLink + info.item.value,
@@ -108,6 +151,57 @@ const CardList = (props: any): React.ReactElement => {
         },
       },
     ]);
+  };
+
+  const LikePost = async (id) => {
+    setLikeing(true);
+    let user_id = user.idu;
+    let post = id;
+    let type = 0;
+
+    const like = await postLike({ user_id, post, type }).unwrap();
+
+    getFeeds();
+
+    setLikeing(false);
+  };
+
+  const UpdatePost = async () => {
+    const id = info.item.id;
+    let user_id = user.idu;
+
+    const updatedPost = await update_post({ user_id, message, id }).unwrap();
+    // console.log(updatedPost);
+    if (updatedPost) {
+      bottomSheet.current.close();
+    showToastMsg('Updated')
+  } else {
+      showToastMsg('Error failed to updated')
+    }
+    getFeeds();
+  };
+
+  const DeletePost = async () => {
+    const id = info.item.id;
+    let user_id = user.idu;
+    let type = 1;
+    
+    const updatedPost = await delete_post({ user_id, id, type }).unwrap();
+    // console.log(updatedPost);
+    
+    getFeeds();
+    showToastMsg('Deleted successfully')
+  };
+
+  const onSelect = (index: IndexPath, comment: any): void => {
+    if (index.row === 0) {
+      bottomSheet.current.show();
+      setMessage(comment.message);
+    } else if (1) {
+      DeletePost();
+    }
+    setSelectedIndex(index);
+    toggleMenu();
   };
 
   const renderButton = (): ButtonElement => (
@@ -134,18 +228,6 @@ const CardList = (props: any): React.ReactElement => {
     },
     {
       title: "Delete",
-      accessoryLeft: DeleteIcon,
-    },
-    {
-      title: "Public",
-      accessoryLeft: DeleteIcon,
-    },
-    {
-      title: "Friends",
-      accessoryLeft: DeleteIcon,
-    },
-    {
-      title: "Private",
       accessoryLeft: DeleteIcon,
     },
   ];
@@ -180,12 +262,41 @@ const CardList = (props: any): React.ReactElement => {
       <OverflowMenu
         visible={menuVisible}
         selectedIndex={selectedIndex}
-        onSelect={onSelect}
+        onSelect={(index) => onSelect(index, comment)}
         onBackdropPress={toggleMenu}
         anchor={renderButton}
       >
         {user.idu === comment.idu ? renderData : renderFriendData}
       </OverflowMenu>
+
+      <BottomSheet hasDraggableIcon ref={bottomSheet} height={270}>
+        <ScrollView style={styles.container}>
+          <KeyboardAvoidingView offset={keyboardOffset}>
+            <Text style={{ width: 200, paddingLeft: 15, paddingBottom: 6 }}>
+              Edit Post
+            </Text>
+            <TextInput
+              style={styles.commentInput}
+              onChangeText={(msgValue) => setMessage(msgValue)}
+              value={message}
+              placeholder="Write Comment"
+              multiline={true}
+              numberOfLines={4}
+            />
+          </KeyboardAvoidingView>
+        </ScrollView>
+        <View style={{ width: 200, padding: 15 }}>
+          <Button
+            accessoryLeft={loading ? LoadingIndicator : null}
+            disabled={loading}
+            onPress={UpdatePost}
+            appearance="outline"
+            status="basic"
+          >
+            <Text>Save Edit</Text>
+          </Button>
+        </View>
+      </BottomSheet>
     </View>
   );
 
@@ -235,24 +346,6 @@ const CardList = (props: any): React.ReactElement => {
       /> */}
     </View>
   );
-
-  const LikePost = async (id) => {
-    setLikeing(true);
-    let user_id = user.idu;
-    let post = id;
-    let type = 0;
-
-    const like = await postLike({ user_id, post, type }).unwrap();
-
-    dispatch(refreshFeeds);
-
-    const feedList = await feeds({ user_id }).unwrap();
-
-    dispatch(userFeeds(feedList));
-    dispatch(refreshDone);
-
-    setLikeing(false);
-  };
 
   return (
     <View style={styles.commentItem}>
@@ -346,6 +439,21 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     backgroundColor: "#fff",
     borderRadius: 5,
+  },
+  commentInput: {
+    backgroundColor: "#EDEDED",
+    padding: 10,
+    borderRadius: 10,
+    marginHorizontal: 16,
+  },
+  indicator: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "background-basic-color-4",
+    paddingBottom: 8,
   },
   commentHeader: {
     flexDirection: "row",

@@ -82,6 +82,20 @@ export const usersApi = createApi({
         body: credentials,
       }),
     }),
+    getGroupMembers: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "getGroupMembers.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    getGroupMemberData: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "getGroupMemberData.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
     getNotifications: builder.mutation<any, any>({
       query: (credentials) => ({
         url: "getAllNotifications.php",
@@ -120,6 +134,20 @@ export const usersApi = createApi({
     post_comment: builder.mutation<any, any>({
       query: (credentials) => ({
         url: "addComment.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    update_post: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "updatePost.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    delete_post: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "delete.php",
         method: "POST",
         body: credentials,
       }),
@@ -166,6 +194,10 @@ export const {
   useGetNotificationsMutation,
   usePost_feedMutation,
   usePost_commentMutation,
+  useUpdate_postMutation,
+  useDelete_postMutation,
+  useGetGroupMembersMutation,
+  useGetGroupMemberDataMutation,
 } = usersApi;
 
 // export const { usePost_feedMutation } = postApi;

@@ -16,11 +16,11 @@ export const GroupCard = (props: any): CardElement => {
   const { cover, title, description, members } = props.items;
 
   React.useEffect(() => {
-    // console.log(props);
+    console.log(props);
   }, []);
 
   return (
-    <Card style={styles.container}>
+    <Card onPress={() => navigate("GroupDiscussion", { ...props.items })} style={styles.container}>
       <ImageOverlay
         style={styles.image}
         source={{ uri: GLOBALTYPES.coversLink + cover }}

@@ -34,3 +34,7 @@ export const Joined = (style: ImageStyle): IconElement => (
   <Icon {...style} name='person-done-outline'/>
 );
 
+export const LeaveIcon = (style: ImageStyle): IconElement => (
+  <Icon {...style} name='person-delete-outline'/>
+);
+
