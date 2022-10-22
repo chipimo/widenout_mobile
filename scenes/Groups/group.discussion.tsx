@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   ImageBackground,
   Platform,
   View,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import {
   Avatar,
@@ -14,10 +15,18 @@ import {
   StyleService,
   Text,
   useStyleSheet,
+  List,
 } from "@ui-kitten/components";
+import BottomSheet from "react-native-gesture-bottom-sheet";
 import { KeyboardAvoidingView } from "./extra/keyboard-avoiding-view.component";
 import { CommentList } from "./extra/comment-list.component";
-import { CameraIcon, Joined, LeaveIcon, VideoIcon } from "./extra/icons";
+import {
+  CameraIcon,
+  Joined,
+  LeaveIcon,
+  PeopleIcon,
+  VideoIcon,
+} from "./extra/icons";
 import {
   useGetGroupFeedsMutation,
   useGetGroupMembersMutation,
@@ -35,6 +44,7 @@ const keyboardOffset = (height: number): number =>
   });
 
 export default ({ navigation }): React.ReactElement => {
+  const bottomSheet = useRef();
   const styles = useStyleSheet(themedStyles);
   const [getGroupFeeds, { isLoading, isError, status, error }] =
     useGetGroupFeedsMutation();
@@ -42,7 +52,7 @@ export default ({ navigation }): React.ReactElement => {
   const [getGroupMemberData] = useGetGroupMemberDataMutation();
   const { list } = useSelector((state: RootState) => state.user.feeds);
   const [groupComments, setGroupComments] = React.useState([]);
-  const [groupMemmbers, setGroupMemmbers] = React.useState([]);
+  const [groupMembers, setGroupMembers] = React.useState([]);
   const [groupMemberData, setGroupMemberData] = React.useState(false);
   const { user } = useSelector((state: RootState) => state.user.user);
 
@@ -62,16 +72,15 @@ export default ({ navigation }): React.ReactElement => {
     let group_id = id;
 
     const groupFeed = await getGroupFeeds({ group_id }).unwrap();
-    // console.log(groupFeed);
     setGroupComments(groupFeed);
-    // dispatch(userFeeds(groupFeed));
   };
 
   const getGroupMembersFunc = async () => {
     let group_id = id;
 
     const groupMembers = await getGroupMembers({ group_id }).unwrap();
-    setGroupMemmbers(groupMembers);
+    setGroupMembers(groupMembers);
+    console.log(groupMembers);
   };
 
   const getGroupMemberDataFunc = async () => {
@@ -83,8 +92,33 @@ export default ({ navigation }): React.ReactElement => {
       user_id,
     }).unwrap();
     if (groupMember) setGroupMemberData(groupMember);
-    console.log(groupMember);
   };
+
+  const renderItem = (info: any): React.ReactElement => (
+    <View style={{ flexDirection: "row", padding: 5 }}>
+      <Avatar source={{ uri: GLOBALTYPES.imageLink + info.item.image }} />
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("PostUserProfile", {
+            userId: info.item.idu,
+          })
+        }
+        style={styles.commentAuthorContainer}
+      >
+        <Text category="h6">
+          {info.item.first_name + " " + info.item.last_name}
+        </Text>
+        <Text appearance="hint" category="c1">
+          {info.item.email}
+        </Text>
+        {info.item.country ? (
+          <Text appearance="hint" category="c1">
+            ({info.item.country})
+          </Text>
+        ) : null}
+      </TouchableOpacity>
+    </View>
+  );
 
   const renderHeader = (): React.ReactElement => (
     <Layout style={styles.header} level="1">
@@ -96,48 +130,88 @@ export default ({ navigation }): React.ReactElement => {
         ></ImageBackground>
         <Divider />
         <View style={styles.headerText}>
-          <View style={{ flexDirection: "row" }}>
-            <Text style={styles.text} category="h6">
-              {title}
-            </Text>
-            <View
-              style={{ flexDirection: "row", marginLeft: 10, marginTop: 2 }}
-            >
-              <Text style={styles.text} appearance="hint">
-                {groupMemmbers.length != 1
-                  ? `${groupMemmbers.length} members`
-                  : `${groupMemmbers.length} member`}
-              </Text>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <View>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={styles.text} category="h6">
+                  {title}
+                </Text>
+                <View
+                  style={{ flexDirection: "row", marginLeft: 10, marginTop: 2 }}
+                >
+                  <Text style={styles.text} appearance="hint">
+                    {groupMembers.length != 1
+                      ? `${groupMembers.length} members`
+                      : `${groupMembers.length} member`}
+                  </Text>
+                </View>
+              </View>
+              <Text style={styles.text}>{description}</Text>
             </View>
-          </View>
-          <Text style={styles.text}>{description}</Text>
-          <View style={{ width: "40%" }}>
-            {groupMemberData ? (
-              <Button
-                size="tiny"
-                disabled={false}
-                onPress={() => {
-                  getFeeds();
-                }}
-                accessoryLeft={Joined}
-              >
-                {"Leave Group"}
-              </Button>
-            ) : (
-              <Button
-                size="tiny"
-                disabled={false}
-                onPress={() => {
-                  getFeeds();
-                }}
-                accessoryLeft={LeaveIcon}
-              >
-                {"Join Group"}
-              </Button>
-            )}
+
+            <View style={{ width: "40%", marginTop: 5 }}>
+              {groupMemberData ? (
+                <Button
+                  size="tiny"
+                  disabled={false}
+                  onPress={() => {
+                    getFeeds();
+                  }}
+                  accessoryLeft={Joined}
+                >
+                  {"Leave Group"}
+                </Button>
+              ) : (
+                <Button
+                  size="tiny"
+                  disabled={false}
+                  onPress={() => {
+                    getFeeds();
+                  }}
+                  accessoryLeft={LeaveIcon}
+                >
+                  {"Join Group"}
+                </Button>
+              )}
+            </View>
           </View>
         </View>
         <Divider />
+        <View>
+          <View style={styles.cardIconsList}>
+            <Button
+              onPress={() => bottomSheet.current.show()}
+              style={styles.iconButton}
+              appearance="ghost"
+              status="basic"
+              accessoryRight={PeopleIcon}
+            >
+              <Text>Members</Text>
+            </Button>
+
+            <Button
+              onPress={getFeeds}
+              style={styles.iconButton}
+              appearance="ghost"
+              status="basic"
+              accessoryRight={PeopleIcon}
+            >
+              <Text>Admins</Text>
+            </Button>
+
+            {/* Members */}
+            <BottomSheet hasDraggableIcon ref={bottomSheet} height={470}>
+              <List
+                style={{ margin: 10, padding: 10 }}
+                data={groupMembers}
+                ItemSeparatorComponent={Divider}
+                renderItem={renderItem}
+              />
+            </BottomSheet>
+          </View>
+        </View>
         <Divider />
         <Divider />
       </View>
@@ -178,6 +252,7 @@ export default ({ navigation }): React.ReactElement => {
   return (
     <KeyboardAvoidingView style={styles.container} offset={keyboardOffset}>
       <CommentList
+        navigation={navigation}
         style={styles.list}
         data={groupComments}
         ListHeaderComponent={renderHeader()}
@@ -195,6 +270,10 @@ const themedStyles = StyleService.create({
   list: {
     backgroundColor: "background-basic-color-4",
     flex: 1,
+  },
+  commentAuthorContainer: {
+    flex: 1,
+    marginHorizontal: 16,
   },
   cardIconsList: {
     flexDirection: "row",

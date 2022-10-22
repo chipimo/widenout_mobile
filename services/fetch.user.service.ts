@@ -152,6 +152,13 @@ export const usersApi = createApi({
         body: credentials,
       }),
     }),
+    getChats: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "getChats.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
     protected: builder.mutation<{ message: string }, void>({
       query: () => "protected",
     }),
@@ -197,6 +204,7 @@ export const {
   useUpdate_postMutation,
   useDelete_postMutation,
   useGetGroupMembersMutation,
+  useGetChatsMutation,
   useGetGroupMemberDataMutation,
 } = usersApi;
 

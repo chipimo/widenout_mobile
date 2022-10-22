@@ -9,13 +9,14 @@ import {
   Text,
   Divider,
 } from "@ui-kitten/components";
-import moment from 'moment'
+import moment from "moment";
 import { HeartIcon, MessageCircleIcon, MoreHorizontalIcon } from "./icons";
+import GroupCardList from "./cardList";
 import { GLOBALTYPES } from "../../../redux/globalTypes";
 
 export type CommentListProps = Omit<ListProps, "renderItem">;
 
-export const CommentList = (props: CommentListProps): React.ReactElement => {
+export const CommentList = (props: any): React.ReactElement => {
   const renderCommentHeader = (comment: any): React.ReactElement => (
     <View style={styles.commentHeader}>
       <Avatar source={{ uri: GLOBALTYPES.imageLink + comment.image }} />
@@ -36,45 +37,14 @@ export const CommentList = (props: CommentListProps): React.ReactElement => {
     </View>
   );
 
-  const renderItem = (info: any): React.ReactElement => (
-    <View style={styles.commentItem}>
-      {renderCommentHeader(info.item)}
-      <Divider />
-      <View style={styles.postBody}>
-        <Text>{info.item.message}</Text>
-      </View>
-      <View>
-        {info.item.value !== "" ? (
-          <Image
-            resizeMode="contain"
-            style={styles.stretch}
-            source={{ uri: GLOBALTYPES.uploadsLink + info.item.value }}
-          />
-        ) : null}
-      </View>
-      <Divider />
-      <View style={styles.commentReactionsContainer}>
-        <Button
-          style={styles.iconButton}
-          appearance="ghost"
-          status="basic"
-          accessoryLeft={MessageCircleIcon}
-        >
-          {info.item.comments !== "0" ? `${info.item.comments}` : ``}
-        </Button>
-        <Button
-          style={styles.iconButton}
-          appearance="ghost"
-          status="danger"
-          accessoryLeft={HeartIcon}
-        >
-          {`${info.item.likes.length}`}
-        </Button>
-      </View>
-    </View>
+  return (
+    <List
+      {...props}
+      renderItem={(info) => (
+        <GroupCardList info={info} navigation={props.navigation} />
+      )}
+    />
   );
-
-  return <List {...props} renderItem={renderItem} />;
 };
 
 const styles = StyleSheet.create({

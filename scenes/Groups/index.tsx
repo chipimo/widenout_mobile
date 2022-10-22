@@ -50,7 +50,10 @@ export default ({ navigation }): React.ReactElement => {
 
   return (
     <KeyboardAvoidingView style={styles.container} offset={keyboardOffset}>
-      <ScrollView>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+      >
         {groupCards.map((list, index) => (
           <GroupCard key={index} navigate={navigation} items={list} />
         ))}

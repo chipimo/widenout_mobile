@@ -64,7 +64,7 @@ export interface OverflowMenuItemType {
   disabled?: boolean;
 }
 
-const CardList = (props: any): React.ReactElement => {
+const GroupCardList = (props: any): React.ReactElement => {
   const { info, navigation } = props;
   const { user } = useSelector((state: RootState) => state.user.user);
 
@@ -528,4 +528,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CardList;
+export default GroupCardList;
