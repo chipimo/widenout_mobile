@@ -9,7 +9,7 @@ const Feeds = createStackNavigator();
 
 export const MessagesNavigator = (): React.ReactElement => (
   <Stack.Navigator
-    screenOptions={{ presentation: "modal", headerShown: false }}
+    screenOptions={{ headerShown: false }}
   >
     <Stack.Screen name="MessagesList" component={Messages} />
     <Stack.Screen name="Chats" component={Chat} />

@@ -159,6 +159,13 @@ export const usersApi = createApi({
         body: credentials,
       }),
     }),
+    setChatMessage: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "setChatMessage.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
     protected: builder.mutation<{ message: string }, void>({
       query: () => "protected",
     }),
@@ -206,6 +213,7 @@ export const {
   useGetGroupMembersMutation,
   useGetChatsMutation,
   useGetGroupMemberDataMutation,
+  useSetChatMessageMutation,
 } = usersApi;
 
 // export const { usePost_feedMutation } = postApi;

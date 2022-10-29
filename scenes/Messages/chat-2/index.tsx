@@ -1,11 +1,18 @@
-import React from 'react';
-import { ImageSourcePropType, Keyboard, Platform } from 'react-native';
-import { Button, Input, StyleService, useStyleSheet } from '@ui-kitten/components';
-import { KeyboardAvoidingView } from './extra/keyboard-avoiding-view.component';
-import { Chat } from './extra/chat.component';
-import { AttachmentsMenu } from './extra/attachments-menu.component';
-import { MicIcon, PaperPlaneIcon, PlusIcon } from './extra/icons';
-import { Message } from './extra/data';
+import React from "react";
+import { ImageSourcePropType, Keyboard, Platform } from "react-native";
+import {
+  Button,
+  Input,
+  StyleService,
+  useStyleSheet,
+} from "@ui-kitten/components";
+import { KeyboardAvoidingView } from "./extra/keyboard-avoiding-view.component";
+import { Chat } from "./extra/chat.component";
+import { AttachmentsMenu } from "./extra/attachments-menu.component";
+import { MicIcon, PaperPlaneIcon, PlusIcon } from "./extra/icons";
+import { Message } from "./extra/data";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/configureStore";
 
 const initialMessages: Message[] = [
   Message.howAreYou(),
@@ -19,24 +26,31 @@ const initialMessages: Message[] = [
 ];
 
 const galleryAttachments: ImageSourcePropType[] = [
-  require('./assets/image-attachment-1.png'),
-  require('./assets/image-attachment-2.jpg'),
-  require('./assets/image-attachment-1.png'),
-  require('./assets/image-attachment-2.jpg'),
+  require("./assets/image-attachment-1.png"),
+  require("./assets/image-attachment-2.jpg"),
+  require("./assets/image-attachment-1.png"),
+  require("./assets/image-attachment-2.jpg"),
 ];
 
-const keyboardOffset = (height: number): number => Platform.select({
-  android: 0,
-  ios: height,
-});
+const keyboardOffset = (height: number): number =>
+  Platform.select({
+    android: 0,
+    ios: height,
+  });
 
-export default (): React.ReactElement => {
-
+export default ({ navigation }): React.ReactElement => {
   const styles = useStyleSheet(themedStyles);
 
   const [messages, setMessages] = React.useState<Message[]>(initialMessages);
   const [message, setMessage] = React.useState<string>(null);
-  const [attachmentsMenuVisible, setAttachmentsMenuVisible] = React.useState<boolean>(false);
+  const [attachmentsMenuVisible, setAttachmentsMenuVisible] =
+    React.useState<boolean>(false);
+  const { user } = useSelector((state: RootState) => state.user.user);
+  const state = navigation.getState();
+
+  React.useEffect(() => {
+    // console.log(state.routes);
+  }, []);
 
   const sendButtonEnabled = (): boolean => {
     return message && message.length > 0;
@@ -47,7 +61,7 @@ export default (): React.ReactElement => {
   };
 
   const onSendButtonPress = (): void => {
-    setMessages([...messages, new Message(message, 'now', true, null)]);
+    setMessages([...messages, new Message(message, "now", true, null)]);
     setMessage(null);
     Keyboard.dismiss();
   };
@@ -75,7 +89,8 @@ export default (): React.ReactElement => {
       />
       <KeyboardAvoidingView
         style={styles.messageInputContainer}
-        offset={keyboardOffset}>
+        offset={keyboardOffset}
+      >
         <Button
           style={[styles.iconButton, styles.attachButton]}
           accessoryLeft={PlusIcon}
@@ -83,13 +98,12 @@ export default (): React.ReactElement => {
         />
         <Input
           style={styles.messageInput}
-          placeholder='Message...'
+          placeholder="Message..."
           value={message}
-          onChangeText={setMessage}
-          accessoryRight={MicIcon}
+           accessoryRight={MicIcon}
         />
         <Button
-          appearance='ghost'
+          appearance="ghost"
           style={[styles.iconButton, styles.sendButton]}
           accessoryLeft={PaperPlaneIcon}
           disabled={!sendButtonEnabled()}
@@ -113,16 +127,16 @@ const themedStyles = StyleService.create({
     paddingHorizontal: 8,
   },
   footer: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,
   },
   messageInputContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 8,
     paddingVertical: 16,
-    backgroundColor: 'background-basic-color-1',
+    backgroundColor: "background-basic-color-1",
   },
   attachButton: {
     borderRadius: 24,

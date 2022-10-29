@@ -1,42 +1,95 @@
-import React from 'react';
-import { ImageSourcePropType, Keyboard, Platform } from 'react-native';
-import { Button, Input, StyleService, useStyleSheet } from '@ui-kitten/components';
-import { KeyboardAvoidingView } from './extra/keyboard-avoiding-view.component';
-import { Chat } from './extra/chat.component';
-import { AttachmentsMenu } from './extra/attachments-menu.component';
-import { MicIcon, PaperPlaneIcon, PlusIcon } from './extra/icons';
-import { Message } from './extra/data';
-
-const initialMessages: Message[] = [
-  Message.howAreYou(),
-  Message.imFine(),
-  Message.imFineToo(),
-  Message.walkingWithDog(),
-  Message.imageAttachment1(),
-  Message.imageAttachment2(),
-  Message.canIJoin(),
-  Message.sure(),
-];
+import React from "react";
+import { ImageSourcePropType, Keyboard, Platform } from "react-native";
+import {
+  Button,
+  Input,
+  StyleService,
+  useStyleSheet,
+  Divider,
+  TopNavigation,
+  TopNavigationAction,
+} from "@ui-kitten/components";
+import { KeyboardAvoidingView } from "./extra/keyboard-avoiding-view.component";
+import { Chat } from "./extra/chat.component";
+import { AttachmentsMenu } from "./extra/attachments-menu.component";
+import { MicIcon, PaperPlaneIcon, PlusIcon } from "./extra/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../redux/configureStore";
+import {
+  useGetChatsMutation,
+  useSetChatMessageMutation,
+} from "../../../services/fetch.user.service";
+import { Message } from "./extra/data";
+import {
+  HideTopBar,
+  ShowTopBar,
+} from "../../../redux/features/drawer/showTopBar";
+import { ArrowIosBackIcon } from "../conversation-list/extra/icons";
 
 const galleryAttachments: ImageSourcePropType[] = [
-  require('./assets/image-attachment-1.png'),
-  require('./assets/image-attachment-2.jpg'),
-  require('./assets/image-attachment-1.png'),
-  require('./assets/image-attachment-2.jpg'),
+  require("./assets/image-attachment-1.png"),
+  require("./assets/image-attachment-2.jpg"),
+  require("./assets/image-attachment-1.png"),
+  require("./assets/image-attachment-2.jpg"),
 ];
 
-const keyboardOffset = (height: number): number => Platform.select({
-  android: 0,
-  ios: height,
-});
+const keyboardOffset = (height: number): number =>
+  Platform.select({
+    android: 0,
+    ios: height,
+  });
 
-export default (): React.ReactElement => {
-
+export default ({ navigation }): React.ReactElement => {
   const styles = useStyleSheet(themedStyles);
 
-  const [messages, setMessages] = React.useState<Message[]>(initialMessages);
+  const [messages, setMessages] = React.useState<Message[]>([]);
   const [message, setMessage] = React.useState<string>();
-  const [attachmentsMenuVisible, setAttachmentsMenuVisible] = React.useState<boolean>(false);
+  const [attachmentsMenuVisible, setAttachmentsMenuVisible] =
+    React.useState<boolean>(false);
+  const { user } = useSelector((state: RootState) => state.user.user);
+  const [chatListArray, setChatListArray] = React.useState<[]>();
+  const state = navigation.getState();
+  const [getChats] = useGetChatsMutation();
+  const [setChatMessage] = useSetChatMessageMutation();
+  const dispatch = useDispatch();
+  // const [uid, setUid] = React.useState<string>('');
+
+  React.useEffect(() => {
+    dispatch(HideTopBar(""));
+    getUserChats();
+    // setUid(user.idu)
+
+    const interval = setInterval(() => getUserChats(), 1000);
+
+    return () => {
+      dispatch(ShowTopBar(""));
+      clearInterval(interval);
+    };
+  }, []);
+
+  const getUserChats = async () => {
+    let uid = user.idu;
+
+    const chatsList = await getChats({
+      uid,
+      cid: state.routes[1].params.senderId,
+      start: 0,
+      type: 3,
+    }).unwrap();
+
+    let initialMessages: Message[] = [];
+
+    chatsList.map((list) => {
+      let msg_type = false;
+      if (uid === list.idu) msg_type = true;
+
+      initialMessages.push(
+        Message.setChart(list.message, list.date, msg_type, null)
+      );
+    });
+    setMessages(initialMessages);
+    setChatListArray(chatsList);
+  };
 
   const sendButtonEnabled = (): boolean => {
     return message && message.length > 0;
@@ -46,10 +99,20 @@ export default (): React.ReactElement => {
     setAttachmentsMenuVisible(!attachmentsMenuVisible);
   };
 
-  const onSendButtonPress = (): void => {
-    setMessages([...messages, new Message(message, 'now', true, null)]);
+  const onSendButtonPress = async (): void => {
+    setMessages([...messages, new Message(message, "now", true, null)]);
     setMessage(null);
     Keyboard.dismiss();
+
+    let uid = user.idu;
+
+    const chatMsg = await setChatMessage({
+      uid,
+      ToId: state.routes[1].params.senderId,
+      msg: message,
+    }).unwrap();
+
+    console.log(chatMsg);
   };
 
   const renderAttachmentsMenu = (): React.ReactElement => (
@@ -65,8 +128,14 @@ export default (): React.ReactElement => {
     />
   );
 
+  const renderBackAction = (): React.ReactElement => (
+    <TopNavigationAction icon={ArrowIosBackIcon} onPress={navigation.goBack} />
+  );
+
   return (
     <React.Fragment>
+      <TopNavigation title="Messages" accessoryLeft={renderBackAction} />
+      <Divider />
       <Chat
         style={styles.chat}
         contentContainerStyle={styles.chatContent}
@@ -75,7 +144,8 @@ export default (): React.ReactElement => {
       />
       <KeyboardAvoidingView
         style={styles.messageInputContainer}
-        offset={keyboardOffset}>
+        offset={keyboardOffset}
+      >
         <Button
           style={[styles.iconButton, styles.attachButton]}
           accessoryLeft={PlusIcon}
@@ -83,13 +153,13 @@ export default (): React.ReactElement => {
         />
         <Input
           style={styles.messageInput}
-          placeholder='Message...'
+          placeholder="Message..."
           value={message}
           onChangeText={setMessage}
           accessoryRight={MicIcon}
         />
         <Button
-          appearance='ghost'
+          appearance="ghost"
           style={[styles.iconButton, styles.sendButton]}
           accessoryLeft={PaperPlaneIcon}
           disabled={!sendButtonEnabled()}
@@ -113,10 +183,10 @@ const themedStyles = StyleService.create({
     paddingVertical: 12,
   },
   messageInputContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 8,
     paddingVertical: 16,
-    backgroundColor: 'background-basic-color-1',
+    backgroundColor: "background-basic-color-1",
   },
   attachButton: {
     borderRadius: 24,

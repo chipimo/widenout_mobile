@@ -10,19 +10,34 @@ import {
 import { MessageItem } from './extra/message-item.component';
 import { SearchIcon } from './extra/icons';
 import { Message } from './extra/data';
-
-const initialMessages: Message[] = [
-  Message.howAreYou(),
-  Message.canYouSend(),
-  Message.noProblem(),
-];
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../redux/configureStore";
+import { useGetChatsMutation } from "../../../services/fetch.user.service";
 
 export default ({ navigation }): React.ReactElement => {
   const styles = useStyleSheet(themedStyles);
   const [searchQuery, setSearchQuery] = React.useState<string>();
+  const [chatListArray, setChatListArray] = React.useState<[]>();
 
-  const onItemPress = (): void => {
-    navigation && navigation.navigate('Chats');
+  const [getChats] = useGetChatsMutation();
+  const { user } = useSelector((state: RootState) => state.user.user);
+
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    getChatsFunc();
+  }, []);
+
+  const getChatsFunc = async () => {
+    let uid = user.idu;
+
+    const chatsList = await getChats({
+      uid,
+      cid: null,
+      start: null,
+      type: 1,
+    }).unwrap();
+    setChatListArray(chatsList);
   };
 
   const renderItem = (
@@ -31,7 +46,7 @@ export default ({ navigation }): React.ReactElement => {
     <MessageItem
       style={styles.item}
       message={info.item}
-      onPress={onItemPress}
+      navigation={navigation}
     />
   );
 
@@ -48,7 +63,7 @@ export default ({ navigation }): React.ReactElement => {
   return (
     <List
       style={styles.list}
-      data={initialMessages}
+      data={chatListArray}
       renderItem={renderItem}
       ListHeaderComponent={renderHeader}
     />
