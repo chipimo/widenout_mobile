@@ -9,6 +9,7 @@ import {
 } from "@ui-kitten/components";
 import {
   AddOutlineIcon,
+  UserIcon,
   GroupIcon,
   HomeIcon,
   MessagesIcon,
@@ -76,7 +77,7 @@ export const HomeBottomNavigation: React.FC<BottomTabBarProps> = ({
       >
         <BottomNavigationTab title="Home" icon={HomeIcon} />
         <BottomNavigationTab title="Groups" icon={GroupIcon} />
-        <BottomNavigationTab title="Post" icon={AddOutlineIcon} />
+        <BottomNavigationTab title="People" icon={UserIcon} />
         <BottomNavigationTab title="Notification" icon={NotificationsIcon} />
         <BottomNavigationTab title="Messages" icon={MessagesIcon} />
       </BrandBottomNavigation>

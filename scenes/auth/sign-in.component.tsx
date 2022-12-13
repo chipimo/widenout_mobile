@@ -46,7 +46,7 @@ export default ({ navigation }): React.ReactElement => {
   const handleSubmit = async () => {
     try {
       const user = await login({ username, password }).unwrap();
-      // console.log(user);
+      // @ts-ignore
       if (user !== "Incorrect Data") {
         dispatch(userLoggedIn(user));
       } else {
@@ -57,9 +57,8 @@ export default ({ navigation }): React.ReactElement => {
       }
     } catch (err) {
       // console.log(err);
-
       showMessage({
-        message: "Failed to login please check your con",
+        message: "Failed to login please check your conation",
         type: "danger",
       });
     }

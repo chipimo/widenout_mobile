@@ -18,10 +18,11 @@ export const CommentList = (props: any): React.ReactElement => {
   const { refresh } = useSelector(
     (state: RootState) => state.user.refreshFeeds
   );
+  const { user } = useSelector((state: RootState) => state.user.user);
   const dispatch = useDispatch();
 
   const getFeeds = async () => {
-    let user_id = "3";
+    let user_id =  user.idu;
 
     const feed = await feeds({ user_id }).unwrap();
 

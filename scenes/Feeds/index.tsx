@@ -21,7 +21,7 @@ import { useFeedsMutation } from "../../services/fetch.user.service";
 import { useDispatch, useSelector } from "react-redux";
 import { userFeeds } from "../../redux/features/feeds";
 import { RootState } from "../../redux/configureStore";
-import { refreshDone } from "../../redux/features/feeds/refresh";
+import { refreshDone, refreshFeeds } from "../../redux/features/feeds/refresh";
 
 const keyboardOffset = (height: number): number =>
   Platform.select({
@@ -46,10 +46,10 @@ export default ({ navigation }): React.ReactElement => {
   }, [refresh]);
 
   const getFeeds = async () => {
+    dispatch(refreshFeeds);
     let user_id =  user.idu;
 
     const feed = await feeds({ user_id }).unwrap();
-    // console.log(refresh);
 
     dispatch(userFeeds(feed));
     dispatch(refreshDone);

@@ -143,14 +143,14 @@ const CardList = (props: any): React.ReactElement => {
 
     setComments(comment);
 
-    setImages([
-      {
-        url: GLOBALTYPES.uploadsLink + info.item.value,
-        props: {
-          // headers: ...
-        },
-      },
-    ]);
+    // setImages([
+    //   {
+    //     url: GLOBALTYPES.uploadsLink + info.item.value,
+    //     props: {
+    //       // headers: ...
+    //     },
+    //   },
+    // ]);
   };
 
   const LikePost = async (id) => {
@@ -174,9 +174,9 @@ const CardList = (props: any): React.ReactElement => {
     // console.log(updatedPost);
     if (updatedPost) {
       bottomSheet.current.close();
-    showToastMsg('Updated')
-  } else {
-      showToastMsg('Error failed to updated')
+      showToastMsg("Updated");
+    } else {
+      showToastMsg("Error failed to updated");
     }
     getFeeds();
   };
@@ -185,12 +185,12 @@ const CardList = (props: any): React.ReactElement => {
     const id = info.item.id;
     let user_id = user.idu;
     let type = 1;
-    
+
     const updatedPost = await delete_post({ user_id, id, type }).unwrap();
     // console.log(updatedPost);
-    
+
     getFeeds();
-    showToastMsg('Deleted successfully')
+    showToastMsg("Deleted successfully");
   };
 
   const onSelect = (index: IndexPath, comment: any): void => {
@@ -322,9 +322,7 @@ const CardList = (props: any): React.ReactElement => {
   const renderPostComment = (comment: any, index): React.ReactElement => (
     <View key={index} style={styles.PostComment}>
       <Avatar source={{ uri: GLOBALTYPES.imageLink + comment.image }} />
-      <View
-        style={styles.PostCommentBody}
-      >
+      <View style={styles.PostCommentBody}>
         <Text appearance="hint" category="c1">
           {moment(comment.time).fromNow()}
         </Text>
@@ -347,7 +345,17 @@ const CardList = (props: any): React.ReactElement => {
         {info.item.value !== "" ? (
           <TouchableOpacity
             activeOpacity={0.89}
-            onPress={() => setVisible(true)}
+            onPress={() => {
+              setVisible(true);
+              setImages([
+                {
+                  url: GLOBALTYPES.uploadsLink + info.item.value,
+                  props: {
+                    // headers: ...
+                  },
+                },
+              ]);
+            }}
           >
             <Image
               resizeMode="contain"
@@ -360,6 +368,7 @@ const CardList = (props: any): React.ReactElement => {
       <Modal visible={visible} transparent={true}>
         <ImageViewer
           enableImageZoom
+          // @ts-ignore
           onSaveToCamera={true}
           enableSwipeDown
           onSwipeDown={() => setVisible(false)}

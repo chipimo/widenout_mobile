@@ -40,7 +40,7 @@ export const usersApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
     // baseUrl: "https://widenout.tk/api/endpoints/",
-    baseUrl: "http://192.168.1.134/api/endpoints/",
+    baseUrl: "http://192.168.1.134/widenout/web/api/endpoints/",
     prepareHeaders: (headers, { getState }) => {
       headers.set("Content-Type", "application/json");
       return headers;
@@ -166,6 +166,34 @@ export const usersApi = createApi({
         body: credentials,
       }),
     }),
+    addFriend: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "setChatMessage.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    getFriends: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "getFriendsList.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    getPeople: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "getPeople.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    setFriend: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "setFriend.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
     protected: builder.mutation<{ message: string }, void>({
       query: () => "protected",
     }),
@@ -214,6 +242,10 @@ export const {
   useGetChatsMutation,
   useGetGroupMemberDataMutation,
   useSetChatMessageMutation,
+  useAddFriendMutation,
+  useGetFriendsMutation,
+  useGetPeopleMutation,
+  useSetFriendMutation,
 } = usersApi;
 
 // export const { usePost_feedMutation } = postApi;

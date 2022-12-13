@@ -7,7 +7,7 @@ import {
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { LayoutsNavigator } from "./layouts.navigator";
 import { ThemesNavigator } from "./themes.navigator";
-import Search from "../scenes/Search";
+
 import { HomeBottomNavigation } from "../components/home-bottom-navigation.component";
 import { HomeDrawer } from "../components/HomeDrawer";
 import { GroupNavigator } from "./groups.navigator";
@@ -16,6 +16,7 @@ import Notifications from "../scenes/Notifications";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/configureStore";
 import { MessagesNavigator } from "./messages.navigation";
+import People from "../scenes/People";
 
 const BottomTab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -30,7 +31,7 @@ const HomeTabsNavigator = (): React.ReactElement => (
   >
     <BottomTab.Screen name="Feeds" component={LayoutsNavigator} />
     <BottomTab.Screen name="Groups" component={GroupNavigator} />
-    <BottomTab.Screen name="Search" component={Search} />
+    <BottomTab.Screen name="People" component={People} />
     <BottomTab.Screen name="Notifications" component={Notifications} />
     <BottomTab.Screen name="Messages" component={MessagesNavigator} />
   </BottomTab.Navigator>

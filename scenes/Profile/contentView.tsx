@@ -88,7 +88,9 @@ export default (props: UserProfile): React.ReactElement => {
 
   const styles = useStyleSheet(themedStyles);
 
-  const onBookButtonPress = (): void => {};
+  const onBookButtonPress = (): void => {
+    
+  };
 
   const renderDetailItem = (
     detail: string,
