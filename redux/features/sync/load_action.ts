@@ -17,15 +17,16 @@ export const refreshFeedsSlice = createSlice({
     refreshFeeds: (
       state: {
         loading: true;
-        payload: 
-      },
-      action: PayloadAction<any>
+        payload: {}
+    },
+    action: PayloadAction<any>
     ) => {
-      state.loading = true;
+        state.loading = true;
     },
     refreshDone: (
-      state: {
-        loading: false;
+        state: {
+            loading: false;
+            payload: {}
       },
       action: PayloadAction<any>
     ) => {
