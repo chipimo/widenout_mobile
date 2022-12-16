@@ -35,7 +35,7 @@ const Suggestion = ({ navigation }): React.ReactElement => {
 
     const List = await getPeople({ user_id }).unwrap();
     peopleList(List);
-// console.log(List);
+console.log(List);
 
     // dispatch(userFeeds(feed));
     // dispatch(refreshDone);

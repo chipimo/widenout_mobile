@@ -24,15 +24,23 @@ export const PeopleCard = (props: any): CardElement => {
   const { user } = useSelector((state: RootState) => state.user.user);
   const [setFriend, { isLoading, isError, status, error }] =
     useSetFriendMutation();
+  const [loader_id, setLoader_id] = React.useState();
+
+  React.useEffect(() => {
+    // console.log(item)
+  }, []);
 
   const addFriend_ = async (friend_to_be) => {
+    setLoader_id(friend_to_be);
+
     let user_id = user.idu;
     const addFriend = await setFriend({
-      friend_to_be,
-      user_id,
+      friend_to_be: friend_to_be,
+      user_id: user_id,
     }).unwrap();
+
     console.log(addFriend);
-    
+    setLoader_id(null);
   };
 
   return (
@@ -79,8 +87,13 @@ export const PeopleCard = (props: any): CardElement => {
         </Text>
       </View>
       <View style={{ width: "100%", marginTop: 1, alignItems: "center" }}>
-        <Button onPress={() => addFriend_(item.idu)} size="tiny" appearance="outline">
-          Add To Friends
+        <Button
+          disabled={item.idu == loader_id ? true : false}
+          onPress={() => addFriend_(item.idu)}
+          size="tiny"
+          appearance="outline"
+        >
+          {item.idu == loader_id ? "Sending request" : "Add To Friends"}
         </Button>
       </View>
     </View>
