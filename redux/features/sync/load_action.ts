@@ -10,11 +10,11 @@ const initialState: UserState = {
     payload:{}
 };
 
-export const refreshFeedsSlice = createSlice({
+export const load_actionSlice = createSlice({
   name: "load_action",
   initialState,
   reducers: {
-    refreshFeeds: (
+    start_load: (
       state: {
         loading: true;
         payload: {}
@@ -23,7 +23,7 @@ export const refreshFeedsSlice = createSlice({
     ) => {
         state.loading = true;
     },
-    refreshDone: (
+    end_load: (
         state: {
             loading: false;
             payload: {}
@@ -36,6 +36,6 @@ export const refreshFeedsSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { refreshDone, refreshFeeds } = refreshFeedsSlice.actions;
+export const { start_load, end_load } = load_actionSlice.actions;
 
-export default refreshFeedsSlice.reducer;
+export default load_actionSlice.reducer;

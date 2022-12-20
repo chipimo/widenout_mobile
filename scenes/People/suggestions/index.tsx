@@ -22,23 +22,20 @@ const Suggestion = ({ navigation }): React.ReactElement => {
     useGetPeopleMutation();
   const [people, peopleList] = React.useState([]);
   const { user } = useSelector((state: RootState) => state.user.user);
+  const { loading } = useSelector((state: RootState) => state.user.load_action);
 
   const dispatch = useDispatch();
 
   React.useEffect(() => {
     circleAnimated();
     getFriendList();
-  }, []);
+  }, [loading]);
 
   const getFriendList = async () => {
     let user_id = user.idu;
 
     const List = await getPeople({ user_id }).unwrap();
     peopleList(List);
-console.log(List);
-
-    // dispatch(userFeeds(feed));
-    // dispatch(refreshDone);
   };
 
   const circleAnimated = () => {

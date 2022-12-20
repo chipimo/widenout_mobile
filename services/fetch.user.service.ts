@@ -187,9 +187,23 @@ export const usersApi = createApi({
         body: credentials,
       }),
     }),
+    getPendingFriends: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "getPendingFriends.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
     setFriend: builder.mutation<any, any>({
       query: (credentials) => ({
         url: "setFriend.php",
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    removePendingFriend: builder.mutation<any, any>({
+      query: (credentials) => ({
+        url: "removePendingFriend.php",
         method: "POST",
         body: credentials,
       }),
@@ -246,6 +260,8 @@ export const {
   useGetFriendsMutation,
   useGetPeopleMutation,
   useSetFriendMutation,
+  useGetPendingFriendsMutation,
+  useRemovePendingFriendMutation
 } = usersApi;
 
 // export const { usePost_feedMutation } = postApi;

@@ -1,8 +1,18 @@
 import React from 'react';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
 import ExpoAppLoading from 'expo-app-loading';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import { Asset } from 'expo-asset';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 export type TaskResult<T = any> = [string, T];
 export type Task = () => Promise<TaskResult | null>;

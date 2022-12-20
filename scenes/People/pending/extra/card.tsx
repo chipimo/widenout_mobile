@@ -15,17 +15,17 @@ import {
 } from "@ui-kitten/components";
 import { ImageOverlay } from "./image-overlay.component";
 import { GLOBALTYPES } from "../../../../redux/globalTypes";
-import { useSetFriendMutation } from "../../../../services/fetch.user.service";
+import { useRemovePendingFriendMutation } from "../../../../services/fetch.user.service";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../redux/configureStore";
 import { start_load } from "../../../../redux/features/sync/load_action";
 import { end_load } from "../../../../redux/features/sync/dist/load_action";
 
-export const PeopleCard = (props: any): CardElement => {
+export const FriendsCard = (props: any): CardElement => {
   const { style, training, item, navigation, ...cardProps } = props;
   const { user } = useSelector((state: RootState) => state.user.user);
-  const [setFriend, { isLoading, isError, status, error }] =
-    useSetFriendMutation();
+  const [removePendingFriend, { isLoading, isError, status, error }] =
+    useRemovePendingFriendMutation();
   const [loader_id, setLoader_id] = React.useState();
   const dispatch = useDispatch();
 
@@ -33,15 +33,15 @@ export const PeopleCard = (props: any): CardElement => {
     // console.log(item)
   }, []);
 
-  const addFriend_ = async (friend_to_be) => {
-    setLoader_id(friend_to_be);
-    dispatch(start_load(true));
-
+  const cancel = async (friend_to_remove) => {
     let user_id = user.idu;
 
-    await setFriend({
-      friend_to_be: friend_to_be,
+    setLoader_id(friend_to_remove);
+    dispatch(start_load(true));
+
+    await removePendingFriend({
       user_id: user_id,
+      friend_to_remove: friend_to_remove,
     }).unwrap();
 
     setLoader_id(null);
@@ -94,11 +94,11 @@ export const PeopleCard = (props: any): CardElement => {
       <View style={{ width: "100%", marginTop: 1, alignItems: "center" }}>
         <Button
           disabled={item.idu == loader_id ? true : false}
-          onPress={() => addFriend_(item.idu)}
+          onPress={() => cancel(item.idu)}
           size="tiny"
           appearance="outline"
         >
-          {item.idu == loader_id ? "Sending request" : "Add To Friends"}
+          {item.idu == loader_id ? "Canceling..." : "Cancel Friend Request"}
         </Button>
       </View>
     </View>

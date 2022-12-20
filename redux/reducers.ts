@@ -6,12 +6,14 @@ import refreshFeedsReducer from './features/feeds/refresh';
 import drawerReducer from './features/drawer';
 import topBarReducer from './features/drawer/showTopBar';
 import bottomBarReducer from './features/drawer/bottomToolBar';
+import load_actionReducer from './features/sync/load_action';
 
 
 const rootReducers = combineReducers({
     user: userReducer,
     feeds: feedsReducer,
     postComments: PostCommentsReducer,
+    load_action: load_actionReducer,
     refreshFeeds: refreshFeedsReducer,
     topBar: topBarReducer,
     drawerState: drawerReducer,
