@@ -7,6 +7,7 @@ import drawerReducer from './features/drawer';
 import topBarReducer from './features/drawer/showTopBar';
 import bottomBarReducer from './features/drawer/bottomToolBar';
 import load_actionReducer from './features/sync/load_action';
+import expo_tokenReducer from './features/expo_token';
 
 
 const rootReducers = combineReducers({
@@ -14,6 +15,7 @@ const rootReducers = combineReducers({
     feeds: feedsReducer,
     postComments: PostCommentsReducer,
     load_action: load_actionReducer,
+    expo_token: expo_tokenReducer,
     refreshFeeds: refreshFeedsReducer,
     topBar: topBarReducer,
     drawerState: drawerReducer,

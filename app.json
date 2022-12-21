@@ -4,11 +4,18 @@
     "slug": "widenout",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/WidenOut-logo.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+    },
+    "notification": {
+      "icon": "./assets/ic_stat_logo_fblanc_512.png",
+      "color": "#3b3b3b",
+      "iosDisplayInForeground": true,
+      "androidMode": "default",
+      "androidCollapsedTitle": "Updates from WidenOut"
     },
     "plugins": [
       [
@@ -22,20 +29,18 @@
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/ca36d396-e5cb-45ac-be5d-879e1ecf5ffb"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
+      "icon": "./assets/ic_stat_logo_fblanc_512.png",
       "supportsTablet": true
     },
     "android": {
+      "icon": "./assets/ic_stat_logo_fblanc_512.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ]
+      "permissions": ["android.permission.RECORD_AUDIO"]
     },
     "web": {
       "favicon": "./assets/favicon.png"

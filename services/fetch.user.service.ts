@@ -19,6 +19,7 @@ export interface FeedsResponse {
 export interface LoginRequest {
   username: string;
   password: string;
+  token: string;
 }
 
 export interface UserTokenRequest {

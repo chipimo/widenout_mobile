@@ -16,11 +16,12 @@ import {
   Icon,
 } from "@ui-kitten/components";
 import { KeyboardAvoidingView } from "./extra/3rd-party";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showMessage } from "react-native-flash-message";
 import { useLoginMutation } from "../../services/fetch.user.service";
 import { userLoggedIn } from "../../redux/features/auth/userAuth";
 import { margin } from "../../components/config/spacing";
+import { RootState } from "../../redux/configureStore";
 
 const height = Dimensions.get("window").height;
 
@@ -28,6 +29,7 @@ export default ({ navigation }): React.ReactElement => {
   const [username, setUsername] = React.useState<string>();
   const [password, setPassword] = React.useState<string>();
   const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
+  const { token } = useSelector((state: RootState) => state.user.expo_token);
   const [done, setDone] = React.useState<boolean>(false);
 
   // const dispatch = useDispatch();
@@ -35,17 +37,19 @@ export default ({ navigation }): React.ReactElement => {
   const [login, { isLoading, isError, status, error }] = useLoginMutation();
   const dispatch = useDispatch();
 
-  useEffect(() => {}, [error]);
+  useEffect(() => {
+    console.log(token);
+  }, [error]);
 
-  const styles = useStyleSheet(themedStyles);
+  const styles = useStyleSheet(themedStyles); 
 
   const onSignUpButtonPress = (): void => {
     navigation && navigation.navigate("SignUp");
-  };
+  }; 
 
   const handleSubmit = async () => {
     try {
-      const user = await login({ username, password }).unwrap();
+      const user = await login({ username, password, token }).unwrap();
       // @ts-ignore
       if (user !== "Incorrect Data") {
         dispatch(userLoggedIn(user));
@@ -56,7 +60,7 @@ export default ({ navigation }): React.ReactElement => {
         });
       }
     } catch (err) {
-      // console.log(err);
+      console.log(err);
       showMessage({
         message: "Failed to login please check your conation",
         type: "danger",

@@ -1,10 +1,13 @@
-import React from 'react';
-import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
-import ExpoAppLoading from 'expo-app-loading';
-import * as SplashScreen from 'expo-splash-screen';
-import * as Font from 'expo-font';
-import { Asset } from 'expo-asset';
+import React, { useEffect, useRef, useState } from "react";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import ExpoAppLoading from "expo-app-loading";
+import * as SplashScreen from "expo-splash-screen";
+import * as Font from "expo-font";
+import { Asset } from "expo-asset";
+import { Platform } from "react-native";
+import { useDispatch } from "react-redux";
+import { set_expo_token } from "../redux/features/expo_token";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -24,7 +27,9 @@ export interface ApplicationLoaderProps<LoadableConfiguration = any> {
   children: (config: LoadableConfiguration) => React.ReactElement;
 }
 
-export const LoadFontsTask = (fonts: { [key: string]: number }): Promise<TaskResult> => {
+export const LoadFontsTask = (fonts: {
+  [key: string]: number;
+}): Promise<TaskResult> => {
   return Font.loadAsync(fonts).then(() => null);
 };
 
@@ -51,9 +56,14 @@ export const LoadAssetsTask = (assets: number[]): Promise<TaskResult> => {
  * @property {(config: LoadableConfiguration) => React.ReactElement} children - Should return Application component
  */
 export const AppLoading: React.FC<ApplicationLoaderProps> = (props) => {
-
   const [loading, setLoading] = React.useState<boolean>(true);
   const loadingResult = React.useRef(props.initialConfig || {});
+
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState<any>(false);
+  const notificationListener = useRef<any>();
+  const responseListener = useRef<any>();
+  const dispatch = useDispatch();
 
   const onTasksFinish = (): void => {
     setLoading(false);
@@ -67,9 +77,68 @@ export const AppLoading: React.FC<ApplicationLoaderProps> = (props) => {
   };
 
   const startTasks = (): Promise<void> => {
-    return Promise.all(props.tasks.map(task => task().then(saveTaskResult)))
-    .then();
+    return Promise.all(
+      props.tasks.map((task) => task().then(saveTaskResult))
+    ).then();
   };
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+
+    // This listener is fired whenever a notification is received while the app is foregrounded
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
+  async function registerForPushNotificationsAsync() {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      // console.log(token);
+      dispatch(set_expo_token({ token }));
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+
+    return token;
+  }
 
   const renderLoadingElement = (): React.ReactElement => (
     <ExpoAppLoading
