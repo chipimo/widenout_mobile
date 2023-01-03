@@ -253,7 +253,7 @@ const CardList = (props: any): React.ReactElement => {
       >
         <Text category="h6">
           {comment.first_name + " " + comment.last_name}
-        </Text>
+        </Text> 
         <Text appearance="hint" category="c1">
           {moment(comment.time).fromNow()}
         </Text>

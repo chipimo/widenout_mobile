@@ -42,22 +42,25 @@ export const HomeDrawer = ({ navigation }): DrawerElement => {
       icon: UserIcon,
       onPress: () => {
         navigation.toggleDrawer();
-        navigation.navigate("Libraries");
+        navigation.navigate("PostUserProfile", {
+          userId: user.idu,
+        });
       },
     },
-    {
-      title: "Settings",
-      icon: SettingsIcon,
-      onPress: () => {
-        navigation.toggleDrawer();
-        navigation.navigate("Libraries");
-      },
-    },
+    // {
+    //   title: "Settings",
+    //   icon: SettingsIcon,
+    //   onPress: () => {
+    //     navigation.toggleDrawer();
+    //     navigation.navigate("Libraries");
+    //   },
+    // },
     {
       title: "Notifications",
       icon: NotificationsIcon,
       onPress: () => {
         navigation.toggleDrawer();
+        navigation.navigate("Notifications");
       },
     },
     {
@@ -65,16 +68,17 @@ export const HomeDrawer = ({ navigation }): DrawerElement => {
       icon: GroupIcon,
       onPress: () => {
         navigation.toggleDrawer();
+        navigation.navigate("Groups");
       },
     },
-    {
-      title: "Theme",
-      icon: ThemeIcon,
-      onPress: () => {
-        navigation.toggleDrawer();
-        navigation.navigate("Theme");
-      },
-    },
+    // {
+    //   title: "Theme",
+    //   icon: ThemeIcon,
+    //   onPress: () => {
+    //     navigation.toggleDrawer();
+    //     navigation.navigate("Theme");
+    //   },
+    // },
     {
       title: "Logout",
       icon: LogoutIcon,

@@ -22,6 +22,7 @@
     "@eva-design/eva": "^2.1.1",
     "@expo/vector-icons": "^13.0.0",
     "@react-native-async-storage/async-storage": "^1.17.9",
+    "@react-native-community/netinfo": "9.3.0",
     "@react-navigation/bottom-tabs": "^6.3.3",
     "@react-navigation/drawer": "^6.4.4",
     "@react-navigation/material-top-tabs": "^6.2.3",
@@ -72,7 +73,6 @@
     "react-redux": "^8.0.2",
     "redux-persist": "^6.0.0",
     "redux-persist-transform-immutable": "^5.0.0",
-    "rn-fetch-blob-v2": "^0.14.1",
     "validator": "^13.7.0"
   },
   "devDependencies": {

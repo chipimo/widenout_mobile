@@ -31,6 +31,7 @@ export default ({ navigation }): React.ReactElement => {
   const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
   const { token } = useSelector((state: RootState) => state.user.expo_token);
   const [done, setDone] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(true);
 
   // const dispatch = useDispatch();
   // const [getUserLogin] = useGetUserMutation();
@@ -38,16 +39,17 @@ export default ({ navigation }): React.ReactElement => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(token);
-  }, [error]);
+    if (token) setLoading(false);
+  }, [token]);
 
-  const styles = useStyleSheet(themedStyles); 
+  const styles = useStyleSheet(themedStyles);
 
   const onSignUpButtonPress = (): void => {
     navigation && navigation.navigate("SignUp");
-  }; 
+  };
 
   const handleSubmit = async () => {
+    setLoading(false);
     try {
       const user = await login({ username, password, token }).unwrap();
       // @ts-ignore
@@ -58,13 +60,15 @@ export default ({ navigation }): React.ReactElement => {
           message: "Incorrect Username or Password",
           type: "danger",
         });
+        setLoading(true)
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       showMessage({
         message: "Failed to login please check your conation",
         type: "danger",
       });
+      setLoading(true)
     }
   };
 
@@ -125,9 +129,20 @@ export default ({ navigation }): React.ReactElement => {
           </Button>
         </View>
       </Layout>
-      <Button style={styles.signInButton} onPress={handleSubmit} size="medium">
-        SIGN IN
-      </Button>
+
+      {loading ? (
+        <Button style={styles.signInButton} disabled size="medium">
+          Loading...
+        </Button>
+      ) : (
+        <Button
+          style={styles.signInButton}
+          onPress={handleSubmit}
+          size="medium"
+        >
+          SIGN IN
+        </Button>
+      )}
       <Button
         style={styles.signUpButton}
         appearance="ghost"

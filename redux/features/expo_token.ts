@@ -18,7 +18,6 @@ export const expo_tokenSlice = createSlice({
       },
       action: PayloadAction<any>
     ) => {
-      console.log(action.payload.token);
       state.token = action.payload.token;
     },
   },
