@@ -41,7 +41,7 @@ export const usersApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
     // baseUrl: "https://widenout.tk/api/endpoints/",
-    baseUrl: "http://192.168.1.134/widenout/web/api/endpoints/",
+    baseUrl: "https://jw-widenout.com/api/endpoints/",
     prepareHeaders: (headers, { getState }) => {
       headers.set("Content-Type", "application/json");
       return headers;

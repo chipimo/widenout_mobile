@@ -19,7 +19,7 @@ import { useRemovePendingFriendMutation } from "../../../../services/fetch.user.
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../../redux/configureStore";
 import { start_load } from "../../../../redux/features/sync/load_action";
-import { end_load } from "../../../../redux/features/sync/dist/load_action";
+import { end_load } from "../../../../redux/features/sync/load_action";
 
 export const FriendsCard = (props: any): CardElement => {
   const { style, training, item, navigation, ...cardProps } = props;

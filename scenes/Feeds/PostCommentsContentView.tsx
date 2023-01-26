@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet, TextInput, Dimensions  } from "react-native";
 import { Avatar, Button, List, Text } from "@ui-kitten/components";
 import { SendIcon } from "./extra/icons";
-import { GLOBALTYPES } from "../../redux/dist/globalTypes";
+import { GLOBALTYPES } from "../../redux/globalTypes";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/configureStore";

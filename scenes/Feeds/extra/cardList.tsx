@@ -9,6 +9,7 @@ import {
   ImageStyle,
   TextInput,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import {
   Avatar,
@@ -44,7 +45,7 @@ import {
   useGetPostCommentMutation,
   usePostLikeMutation,
   useDelete_postMutation,
-} from "../../../services/dist/fetch.user.service";
+} from "../../../services/fetch.user.service";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/configureStore";
 import {
@@ -143,14 +144,14 @@ const CardList = (props: any): React.ReactElement => {
 
     setComments(comment);
 
-    // setImages([
-    //   {
-    //     url: GLOBALTYPES.uploadsLink + info.item.value,
-    //     props: {
-    //       // headers: ...
-    //     },
-    //   },
-    // ]);
+    setImages([
+      {
+        url: GLOBALTYPES.uploadsLink + info.item.value,
+        props: {
+          // headers: ...
+        },
+      },
+    ]);
   };
 
   const LikePost = async (id) => {
@@ -495,7 +496,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   stretch: {
-    width: "100%",
+    width: '100%',
     height: undefined,
     aspectRatio: 1,
   },

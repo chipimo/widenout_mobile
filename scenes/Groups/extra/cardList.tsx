@@ -44,7 +44,7 @@ import {
   useGetPostCommentMutation,
   usePostLikeMutation,
   useDelete_postMutation,
-} from "../../../services/dist/fetch.user.service";
+} from "../../../services/fetch.user.service";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/configureStore";
 import {

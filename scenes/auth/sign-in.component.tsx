@@ -39,7 +39,8 @@ export default ({ navigation }): React.ReactElement => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (token) setLoading(false);
+    // if (token) setLoading(false);
+    setLoading(false);
   }, [token]);
 
   const styles = useStyleSheet(themedStyles);

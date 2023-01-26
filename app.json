@@ -34,7 +34,8 @@
     ],
     "ios": {
       "icon": "./assets/ic_stat_logo_fblanc_512.png",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.theps.widenout"
     },
     "android": {
       "icon": "./assets/ic_stat_logo_fblanc_512.png",
