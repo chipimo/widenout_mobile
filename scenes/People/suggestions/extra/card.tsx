@@ -84,9 +84,7 @@ export const PeopleCard = (props: any): CardElement => {
             {`${item.first_name} ${item.last_name}`}
           </Text>
         </TouchableOpacity>
-        <Text style={styles.text} category="h6">
-          {`${item.bio}`}
-        </Text>
+        
         <Text style={styles.text} category="h6">
           {`${item.location}`}
         </Text>

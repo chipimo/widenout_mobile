@@ -9,7 +9,8 @@ const SignUpScreen = () => {
   return (
     <WebView
       startInLoadingState={true}
-      source={{ uri: "https://jw-widenout.com//index.php?a=register" }}
+      source={{ uri: "http://192.168.43.176/wnoweb/index.php?a=start_reg" }}
+      // source={{ uri: "https://jw-widenout.com//index.php?a=register" }}
       renderLoading={() => {
         return (
           <AnimatedLoader
