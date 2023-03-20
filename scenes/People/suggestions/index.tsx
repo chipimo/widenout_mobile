@@ -18,7 +18,7 @@ const Suggestion = ({ navigation }): React.ReactElement => {
   const [circleAnimatedValue, setCircleAnimatedValue] = React.useState(
     new Animated.Value(0)
   );
-  const [getPeople, { isLoading, isError, status, error }] =
+  const [getPeople] =
     useGetPeopleMutation();
   const [people, peopleList] = React.useState([]);
   const { user } = useSelector((state: RootState) => state.user.user);

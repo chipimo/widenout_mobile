@@ -25,13 +25,13 @@ export const GroupCard = (props: any): CardElement => {
         style={styles.image}
         source={{ uri: GLOBALTYPES.coversLink + cover }}
       >
-        <Text style={styles.level} category="s1" status="control">
+        <Text style={styles.level} category="h4" status="control">
           {title}
         </Text>
         <Text style={styles.level} category="s1" status="control">
           {members != 1 ? `${members} members` : `${members} member`}
         </Text>
-        <Text style={styles.title} category="h4" status="control">
+        <Text style={styles.title} category="s1" status="control">
           {description}
         </Text>
         <Button

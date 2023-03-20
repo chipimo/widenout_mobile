@@ -8,6 +8,8 @@ import { AppLoading, LoadFontsTask, Task } from "./app-loading.component";
 import TopStatusBar from "../components/status-bar.component";
 import { SplashImage } from "../components/splash-image.component";
 import AppNavigator from "../navigation/app.navigator";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/configureStore";
 
 const loadingTasks: Task[] = [
   () =>
@@ -17,16 +19,16 @@ const loadingTasks: Task[] = [
     }),
 ];
 
-const defaultConfig: { mapping: string; theme: string } = {
-  mapping: "eva",
-  theme: "light",
-};
-
 const App = () => {
+  const { theme } = useSelector((state: RootState) => state.user.theme);
+
   return (
     <React.Fragment>
       <IconRegistry icons={EvaIconsPack} />
-      <ApplicationProvider {...eva} theme={eva.light}>
+      <ApplicationProvider
+        {...eva}
+        theme={theme == "light" ? eva.light : eva.dark}
+      >
         <SafeAreaProvider>
           <TopStatusBar />
           <FlashMessage position="top" />
@@ -38,18 +40,24 @@ const App = () => {
 };
 
 const Splash = ({ loading }): React.ReactElement => (
-  <SplashImage
-    loading={loading}
-    source={require("../assets/images/img_background_splash.png")}
-  />
+  <SplashImage loading={loading} source={require("../assets/splash.png")} />
 );
 
-export default (): React.ReactElement => (
-  <AppLoading
-    tasks={loadingTasks}
-    initialConfig={defaultConfig}
-    placeholder={Splash}
-  >
-    {(props) => <App {...props} />}
-  </AppLoading>
-);
+export default (): React.ReactElement => {
+  const { theme } = useSelector((state: RootState) => state.user.theme);
+
+  const defaultConfig: { mapping: string; theme: string } = {
+    mapping: "eva",
+    theme,
+  };
+
+  return (
+    <AppLoading
+      tasks={loadingTasks}
+      initialConfig={defaultConfig}
+      placeholder={Splash}
+    >
+      {(props) => <App {...props} />}
+    </AppLoading>
+  );
+};

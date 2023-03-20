@@ -5,12 +5,12 @@ import {
   ViewProps,
 } from "react-native";
 
-export type StatusBarProps = RNStatusBarProps;
+export type StatusBarProps = RNStatusBarProps; 
 
 const TopStatusBar = (props): React.ReactElement<StatusBarProps> => {
   const { ...statusBarProps } = props;
 
-  return <RNStatusBar {...statusBarProps} />;
+  return <RNStatusBar barStyle="light-content" {...statusBarProps} />;
 };
 
 export default TopStatusBar;

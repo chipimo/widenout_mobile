@@ -37,7 +37,6 @@ const UserProfile = (props: UserProfile) => {
 
   const renderBookmarkAction = (): React.ReactElement => (
     <TopNavigationAction
-      icon={BookmarkOutlineIcon}
       onPress={onBookmarkActionPress}
     />
   );

@@ -1,7 +1,6 @@
 {
-  "name": "app",
-  "version": "1.0.1",
-  "main": "node_modules/expo/AppEntry.js",
+  "name": "widenout",
+  "version": "3.0.0",
   "author": {
     "name": "RNE"
   },
@@ -12,9 +11,9 @@
     "expo"
   ],
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "eject": "expo eject"
   },
@@ -37,14 +36,14 @@
     "@ui-kitten/moment": "^5.1.2",
     "axios": "^0.27.2",
     "date-fns": "^2.29.2",
-    "expo": "~46.0.7",
+    "expo": "~46.0.19",
     "expo-app-loading": "~2.1.0",
     "expo-asset": "~8.6.1",
     "expo-device": "~4.3.0",
     "expo-font": "~10.2.0",
     "expo-image-picker": "~13.3.1",
     "expo-notifications": "~0.16.1",
-    "expo-splash-screen": "~0.16.1",
+    "expo-splash-screen": "~0.16.2",
     "expo-status-bar": "~1.4.0",
     "expo-updates": "~0.14.6",
     "formik": "^2.2.9",

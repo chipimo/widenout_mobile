@@ -1,18 +1,16 @@
 {
   "expo": {
-    "name": "widenout",
+    "name": "WidenOut",
     "slug": "widenout",
-    "version": "1.0.0",
+    "version": "3.1.0",
     "orientation": "portrait",
-    "icon": "./assets/WidenOut-logo.png",
+    "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "notification": {
-      "icon": "./assets/ic_stat_logo_fblanc_512.png",
-      "color": "#3b3b3b",
       "iosDisplayInForeground": true,
       "androidMode": "default",
       "androidCollapsedTitle": "Updates from WidenOut"
@@ -33,12 +31,13 @@
       "**/*"
     ],
     "ios": {
-      "icon": "./assets/ic_stat_logo_fblanc_512.png",
+      "icon": "./assets/ios_icon.png",
       "supportsTablet": true,
-      "bundleIdentifier": "com.theps.widenout"
+      "bundleIdentifier": "com.theps.widenout",
+      "buildNumber": "5.0.4"
     },
     "android": {
-      "icon": "./assets/ic_stat_logo_fblanc_512.png",
+      "icon": "./assets/ios_icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -46,7 +45,8 @@
       "permissions": [
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.theps.widenout"
+      "package": "com.theps.widenout",
+      "versionCode": 5
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -30,6 +30,7 @@ export default ({ navigation }): React.ReactElement => {
   const [password, setPassword] = React.useState<string>();
   const [passwordVisible, setPasswordVisible] = React.useState<boolean>(false);
   const { token } = useSelector((state: RootState) => state.user.expo_token);
+  const { theme } = useSelector((state: RootState) => state.user.theme);
   const [done, setDone] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(true);
 
@@ -50,7 +51,7 @@ export default ({ navigation }): React.ReactElement => {
   };
 
   const handleSubmit = async () => {
-    setLoading(false);
+    setLoading(true);
     try {
       const user = await login({ username, password, token }).unwrap();
       // @ts-ignore
@@ -61,15 +62,15 @@ export default ({ navigation }): React.ReactElement => {
           message: "Incorrect Username or Password",
           type: "danger",
         });
-        setLoading(true)
+        setLoading(false);
       }
     } catch (err) {
-      // console.log(err);
+      console.log(err);
       showMessage({
-        message: "Failed to login please check your conation",
+        message: "Failed to login please check your connection",
         type: "danger",
       });
-      setLoading(true)
+      setLoading(false);
     }
   };
 
@@ -98,7 +99,11 @@ export default ({ navigation }): React.ReactElement => {
       <View style={styles.imageBox}>
         <Image
           style={styles.stretch}
-          source={require("./assets/WidenOut_outline.png")}
+          source={
+            theme === "light"
+              ? require("./assets/WidenOut_outline.png")
+              : require("./assets/WidenOut_outline_black.png")
+          }
         />
       </View>
 
@@ -164,8 +169,8 @@ const themedStyles = StyleService.create({
     marginBottom: 30,
   },
   stretch: {
-    width: 127,
-    height: 144,
+    width: 142,
+    height: 188,
   },
   textForgot: {
     textAlign: "center",

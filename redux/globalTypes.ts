@@ -22,6 +22,11 @@ export const GLOBALTYPES = {
     // uploadsLink: 'http://192.168.1.134/widenout/web/uploads/media/',
     // coversLink: 'http://192.168.1.134/widenout/web/uploads/covers/',
     // apiEndPoint: 'http://192.168.1.134/api/endpoints/',
+    
+    // imageLink: 'http://192.168.43.130/wnoweb//uploads/avatars/',
+    // uploadsLink: 'http://192.168.43.130/wnoweb//uploads/media/',
+    // coversLink: 'http://192.168.43.130/wnoweb//uploads/covers/',
+    // apiEndPoint: 'http://192.168.43.130/wnoweb//api/endpoints/',
 
     // imageLink: 'http://192.168.1.176/widenout/wno/uploads/avatars/default.png',
 };

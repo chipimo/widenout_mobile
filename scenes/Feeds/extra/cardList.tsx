@@ -244,7 +244,7 @@ const CardList = (props: any): React.ReactElement => {
   const renderCommentHeader = (comment: any): React.ReactElement => (
     <View style={styles.commentHeader}>
       <Avatar source={{ uri: GLOBALTYPES.imageLink + comment.image }} />
-      <TouchableOpacity
+      <TouchableOpacity 
         onPress={() =>
           navigation.navigate("PostUserProfile", {
             userId: comment.uid,

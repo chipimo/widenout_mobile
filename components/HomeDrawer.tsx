@@ -11,13 +11,9 @@ import {
   IndexPath,
 } from "@ui-kitten/components";
 import {
-  BookIcon,
-  GithubIcon,
   GroupIcon,
   LogoutIcon,
   NotificationsIcon,
-  SettingsIcon,
-  ThemeIcon,
   UserIcon,
 } from "./icons";
 import { useDispatch, useSelector } from "react-redux";

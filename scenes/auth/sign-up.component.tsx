@@ -3,13 +3,23 @@ import { View, Text } from "react-native";
 import { WebView } from "react-native-webview";
 import AnimatedLoader from "react-native-animated-loader";
 
-const SignUpScreen = () => {
-  const [loading, setLoading] = React.useState(true)
-  
+const SignUpScreen = ({ navigation }): React.ReactElement => {
+  const [loading, setLoading] = React.useState(true);
+
   return (
     <WebView
       startInLoadingState={true}
-      source={{ uri: "http://192.168.43.176/wnoweb/index.php?a=start_reg" }}
+      source={{
+        uri: "http://192.168.43.130/wnoweb//index.php?a=register&finito_registo",
+      }}
+      onMessage={(e) => {
+        if (e.nativeEvent.data === "registered") {
+          navigation.navigate("SignIn");
+        }
+      }}
+      cacheEnabled={false}
+      originWhitelist={["*"]}
+      javaScriptEnabled={true}
       // source={{ uri: "https://jw-widenout.com//index.php?a=register" }}
       renderLoading={() => {
         return (
@@ -19,9 +29,8 @@ const SignUpScreen = () => {
             source={require("../../assets/lottiefiles/infinite-scroll-loader.json")}
             animationStyle={{
               width: 100,
-              height: 100
+              height: 100,
             }}
-            onMessage={ e => { console.log(e.nativeEvent.data) } }
             speed={1}
           >
             <Text>Getting SingUp Page...</Text>
