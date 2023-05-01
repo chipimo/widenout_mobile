@@ -37,13 +37,13 @@ import { useGetUserProfileMutation } from "../../services/fetch.user.service";
 
 const product: Product = Product.centralParkApartment();
 
-export interface UserProfile {
+export interface UserProfileInfo {
   id: string;
   navigation: object;
 }
 
-export default (props: UserProfile): React.ReactElement => {
-  const { id } = props;
+export default (props: UserProfileInfo): React.ReactElement => {
+  const { id, navigation } = props;
   const { user } = useSelector((state: RootState) => state.user.user);
   const [getUserProfile, { isLoading, isError, status, error }] =
     useGetUserProfileMutation();
@@ -93,7 +93,9 @@ export default (props: UserProfile): React.ReactElement => {
 
   const styles = useStyleSheet(themedStyles);
 
-  const onBookButtonPress = (): void => {};
+  const onBookButtonPress = (): void => {
+    navigation.navigate("UserSettings");
+  };
 
   const renderDetailItem = (
     detail: string,
@@ -179,11 +181,7 @@ export default (props: UserProfile): React.ReactElement => {
         style={styles.image}
         source={{ uri: GLOBALTYPES.coversLink + cover }}
       />
-      <Card
-        style={styles.bookingCard}
-        appearance="filled"
-        disabled={true}
-      >
+      <Card style={styles.bookingCard} appearance="filled" disabled={true}>
         <Avatar size="giant" source={{ uri: GLOBALTYPES.imageLink + image }} />
         <Text style={styles.title} category="h6">
           {first_name} {last_name}
