@@ -2,7 +2,7 @@
   "expo": {
     "name": "WidenOut",
     "slug": "widenout",
-    "version": "3.7.0",
+    "version": "4.7.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -34,7 +34,7 @@
       "icon": "./assets/ios_icon.png",
       "supportsTablet": true,
       "bundleIdentifier": "com.theps.widenout",
-      "buildNumber": "6.0.0"
+      "buildNumber": "7.0.0"
     },
     "android": {
       "icon": "./assets/ios_icon.png",
@@ -46,7 +46,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "package": "com.theps.widenout",
-      "versionCode": 6
+      "versionCode": 7
     },
     "web": {
       "favicon": "./assets/favicon.png"

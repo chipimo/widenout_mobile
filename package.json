@@ -52,7 +52,7 @@
     "moment": "^2.29.4",
     "react": "18.0.0",
     "react-dom": "18.0.0",
-    "react-native": "0.69.6",
+    "react-native": "0.69.9",
     "react-native-animated-loader": "^1.0.0",
     "react-native-document-picker": "^8.1.2",
     "react-native-flash-message": "^0.3.1",
